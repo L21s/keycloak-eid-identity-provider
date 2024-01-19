@@ -9,11 +9,29 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <keycloak.version>20.0.1</keycloak.version>
+        <keycloak.version>23.0.1</keycloak.version>
+        <panstar-sdk.version>2.3.1</panstar-sdk.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>governikus</id>
+            <name>Governikus Nexus</name>
+            <url>https://nexus-ext.governikus.de/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>shibboleth</id>
+            <name>Shibboleth</name>
+            <url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -34,13 +52,81 @@
             <version>${keycloak.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>de.governikus.panstar.sdk</groupId>
+            <artifactId>panstar-saml-sdk</artifactId>
+            <version>${panstar-sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.governikus</groupId>
+            <artifactId>identification-report-impl-java</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>9.37.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-services</artifactId>
+            <version>${keycloak.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-saml-core</artifactId>
+            <version>${keycloak.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.18.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.dasniko</groupId>
+            <artifactId>testcontainers-keycloak</artifactId>
+            <version>3.2.0</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.quarkus</groupId>
+                    <artifactId>quarkus-junit4-mock</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <profiles>
         <profile>
             <id>dev</id>
             <build>
-                <!-- we mount the theme inside the container, so no need to have it in the jar to avoid conflicts -->
                 <resources>
                     <resource>
                         <directory>src/main/resources</directory>
@@ -53,6 +139,31 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/deploy</outputDirectory>
                         </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/deploy</outputDirectory>
+                                    <excludeScope>provided</excludeScope>
+                                    <excludeArtifactIds>keycloak-services, keycloak-common, keycloak-core,
+                                        keycloak-server-spi, keycloak-server-spi-private,
+                                        identification-report-impl-java, vertx-core, jakarta.ws.rs-api, jakarta.jws-api,
+                                        bcpkix-jdk18on, bcprov-jdk18on, bcutil-jdk18on
+                                    </excludeArtifactIds>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.2.5</version>
                     </plugin>
                 </plugins>
             </build>

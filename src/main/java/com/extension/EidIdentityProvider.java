@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
+import java.util.stream.Stream;
 
 public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityProviderModel> {
 
@@ -51,7 +52,16 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
 
     try {
       logger.debug("Request AusweisApp to initialize SAML authentication flow.");
-      URI tcTokenRedirectUri = new URI(TcTokenUtils.getStationaryEidClientUrl(tcTokenUrl));
+      String userAgentHeader = request.getHttpRequest().getHttpHeaders().getRequestHeader("User-Agent").toString();
+      boolean isMobileClient = Stream.of("iPhone", "Android", "Windows Phone").anyMatch(userAgentHeader::contains);
+
+      URI tcTokenRedirectUri = null;
+      if (isMobileClient) {
+        tcTokenRedirectUri = new URI(TcTokenUtils.getMobileEidClientUrl(tcTokenUrl));
+      }
+      if (!isMobileClient) {
+        tcTokenRedirectUri = new URI(TcTokenUtils.getStationaryEidClientUrl(tcTokenUrl));
+      }
       logger.debug("TcTokenRedirectUrl is {}", tcTokenRedirectUri);
 
       return Response.seeOther(tcTokenRedirectUri).build();

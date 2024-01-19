@@ -1,11 +1,13 @@
 package com.extension;
 
 import com.extension.configuration.EidIdentityProviderModel;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.junit.jupiter.api.Test;
 import org.keycloak.broker.provider.AuthenticationRequest;
 import org.keycloak.broker.provider.util.IdentityBrokerState;
+import org.keycloak.http.HttpRequest;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.sessions.AuthenticationSessionModel;
@@ -15,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,6 +37,8 @@ public class EidIdentityProviderUnitTest {
         IdentityBrokerState identityBrokerState = mock(IdentityBrokerState.class);
         UriInfo uriInfo = mock(UriInfo.class);
         RealmModel realmModel = mock(RealmModel.class);
+        HttpRequest httpRequest = mock(HttpRequest.class);
+        HttpHeaders httpHeaders = mock(HttpHeaders.class);
         EidIdentityProvider sut = new EidIdentityProvider(session, config);
 
         when(request.getUriInfo()).thenReturn(uriInfo);
@@ -45,6 +50,9 @@ public class EidIdentityProviderUnitTest {
         when(request.getAuthenticationSession().getParentSession().getId()).thenReturn("sessionId");
         when(request.getState()).thenReturn(identityBrokerState);
         when(request.getState().getEncoded()).thenReturn("state");
+        when(request.getHttpRequest()).thenReturn(httpRequest);
+        when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
+        when(httpHeaders.getRequestHeader("User-Agent")).thenReturn(Arrays.asList("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"));
 
         Response response = sut.performLogin(request);
         String expectedLocationHeaderValue = "http://127.0.0.1:24727/eID-Client?tcTokenURL="

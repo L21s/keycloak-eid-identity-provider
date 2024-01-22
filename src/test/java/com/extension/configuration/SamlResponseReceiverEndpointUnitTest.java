@@ -3,17 +3,20 @@ package com.extension.configuration;
 import com.extension.EidIdentityProvider;
 import de.bund.bsi.eid240.PersonalDataType;
 import de.bund.bsi.eid240.RestrictedIDType;
+import de.governikus.panstar.sdk.saml.response.ProcessedSamlResult;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.keycloak.broker.provider.BrokeredIdentityContext;
 import org.keycloak.broker.provider.IdentityProvider;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.sessions.AuthenticationSessionModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -121,6 +124,42 @@ public class SamlResponseReceiverEndpointUnitTest {
     }
 
     @Test
+    void givenIdentityAndConfig_whenSetUpIdentity_thenIdentityIsSetUpWithConfig() {
+        EidIdentityProvider eidIdentityProvider = mock(EidIdentityProvider.class);
+        EidIdentityProviderModel eidIdentityProviderConfig = mock(EidIdentityProviderModel.class);
+        AuthenticationSessionModel authSession = mock(AuthenticationSessionModel.class);
+        ProcessedSamlResult samlResponse = mock(ProcessedSamlResult.class);
+        PersonalDataType personalDataType = mock(PersonalDataType.class);
+        SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+                mock(RealmModel.class),
+                mock(KeycloakSession.class),
+                mock(IdentityProvider.AuthenticationCallback.class),
+                mock(EventBuilder.class),
+                eidIdentityProvider,
+                eidIdentityProviderConfig
+        );
+
+        when(samlResponse.getPersonalData()).thenReturn(personalDataType);
+        when(personalDataType.getGivenNames()).thenReturn("Erika");
+        when(personalDataType.getFamilyNames()).thenReturn("Mustermann");
+
+        BrokeredIdentityContext identity = new BrokeredIdentityContext(Hex.encodeHexString("restrictedId".getBytes()));
+        try {
+            getSetUpIdentityMethod().invoke(sut, identity, eidIdentityProvider, eidIdentityProviderConfig, authSession, samlResponse);
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertNotNull(identity);
+        assertEquals("erika", identity.getFirstName());
+        assertEquals("mustermann", identity.getLastName());
+        assertEquals("erika_mustermann", identity.getUsername());
+        assertEquals(eidIdentityProvider, identity.getIdp());
+        assertEquals(eidIdentityProviderConfig, identity.getIdpConfig());
+        assertEquals(authSession, identity.getAuthenticationSession());
+    }
+
+    @Test
     @Disabled
     void samlResponseReceiverEndpointParsesPersonalDataAndCreatesIdentityForAuthentication() throws URISyntaxException {
         RealmModel realm = mock(RealmModel.class);
@@ -210,6 +249,19 @@ public class SamlResponseReceiverEndpointUnitTest {
 
     private Method getRestrictedIdStringMethod() throws NoSuchMethodException {
         Method method = SamlResponseReceiverEndpoint.class.getDeclaredMethod("getRestrictedIdString", PersonalDataType.class);
+        method.setAccessible(true);
+        return method;
+    }
+
+    private Method getSetUpIdentityMethod() throws NoSuchMethodException {
+        Method method = SamlResponseReceiverEndpoint.class.getDeclaredMethod(
+                "setUpIdentity",
+                BrokeredIdentityContext.class,
+                EidIdentityProvider.class,
+                EidIdentityProviderModel.class,
+                AuthenticationSessionModel.class,
+                ProcessedSamlResult.class
+        );
         method.setAccessible(true);
         return method;
     }

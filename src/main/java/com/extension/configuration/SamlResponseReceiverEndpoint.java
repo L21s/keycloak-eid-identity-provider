@@ -56,16 +56,21 @@ public class SamlResponseReceiverEndpoint {
   @GET
   public Response receiveSamlResponse(@Context UriInfo uriInfo) {
     try {
-      logger.debug(
-              "Received a request on SAML response-receiver endpoint. Try to parse a SAML response and redirect to result endpoint.");
+      logger.info("Received a request on SAML response-receiver endpoint. Try to parse a SAML response, set up an identity, and initiate authentication callback.");
+      logger.debug("SAML response is {}", uriInfo.getRequestUri().getRawQuery());
+
       ProcessedSamlResult samlResponse = new SamlResponseHandler(eidIdentityProviderConfig.getSamlConfiguration())
               .parseSamlResponse(uriInfo.getRequestUri().getRawQuery());
-      logger.debug("Successfully parsed SAML response.");
 
-      AuthenticationSessionModel authSession = getAuthSession(uriInfo, samlResponse);
+      logger.info("Successfully parsed SAML response. Try to set up an identity.");
+
       BrokeredIdentityContext identity = new BrokeredIdentityContext(
               getRestrictedIdString(samlResponse.getPersonalData()));
+      AuthenticationSessionModel authSession = getAuthSession(uriInfo, samlResponse);
       setUpIdentity(identity, eidIdentityProvider, eidIdentityProviderConfig, authSession, samlResponse);
+
+      logger.info("Successfully set up identity. Initiate authentication callback.");
+
       return callback.authenticated(identity);
     } catch (InitializationException | InvalidInputException | SamlAuthenticationException |
              UnsuccessfulSamlAuthenticationProcessException e) {

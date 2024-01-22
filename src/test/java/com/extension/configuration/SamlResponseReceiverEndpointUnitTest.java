@@ -36,44 +36,26 @@ import static org.mockito.Mockito.when;
 
 public class SamlResponseReceiverEndpointUnitTest {
 
-    private static final String WORK_DIR = new File("src/test/resources").getAbsolutePath();
-    private static final String requestSignaturePrivateKeyString;
-    private static final String responseDecryptionPublicKeyString;
-    private static final String responseDecryptionPrivateKeyString;
-    private static final String responseVerificationCertificateString;
-    private static final String requestEncryptionCertificateString;
-
-    static {
-        try {
-            requestSignaturePrivateKeyString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlRequestSignaturePrivateKey.txt")));
-            responseDecryptionPublicKeyString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlResponseDecryptionPublicKey.txt")));
-            responseDecryptionPrivateKeyString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlResponseDecryptionPrivateKey.txt")));
-            responseVerificationCertificateString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlResponseVerificationCertificate.txt")));
-            requestEncryptionCertificateString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlRequestEncryptionCertificate.txt")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Test
     void givenPersonalDataWithID_whenGetRestrictedId_thenReturnHexEncodedString() {
+        SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+                mock(RealmModel.class),
+                mock(KeycloakSession.class),
+                mock(IdentityProvider.AuthenticationCallback.class),
+                mock(EventBuilder.class),
+                mock(EidIdentityProvider.class),
+                mock(EidIdentityProviderModel.class)
+        );
+
+        byte[] restrictedIdInput = "01234".getBytes();
+        RestrictedIDType restrictedId = new RestrictedIDType();
+        restrictedId.setID(restrictedIdInput);
+        PersonalDataType personalData = new PersonalDataType();
+        personalData.setRestrictedID(restrictedId);
+
         try {
-            SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
-                    mock(RealmModel.class),
-                    mock(KeycloakSession.class),
-                    mock(IdentityProvider.AuthenticationCallback.class),
-                    mock(EventBuilder.class),
-                    mock(EidIdentityProvider.class),
-                    mock(EidIdentityProviderModel.class)
-            );
-
-            byte[] restrictedIdInput = "01234".getBytes();
-            RestrictedIDType restrictedId = new RestrictedIDType();
-            restrictedId.setID(restrictedIdInput);
-            PersonalDataType personalData = new PersonalDataType();
-            personalData.setRestrictedID(restrictedId);
-
             String restrictedIdOutputString = getRestrictedIdStringMethod().invoke(sut, personalData).toString();
+            assertNotNull(restrictedIdOutputString);
             assertEquals(Hex.encodeHexString(restrictedIdInput), restrictedIdOutputString);
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
@@ -82,21 +64,21 @@ public class SamlResponseReceiverEndpointUnitTest {
 
     @Test
     void givenPersonalDataWithNullID_whenGetRestrictedId_thenReturnNull() {
+        SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+                mock(RealmModel.class),
+                mock(KeycloakSession.class),
+                mock(IdentityProvider.AuthenticationCallback.class),
+                mock(EventBuilder.class),
+                mock(EidIdentityProvider.class),
+                mock(EidIdentityProviderModel.class)
+        );
+
+        RestrictedIDType restrictedId = new RestrictedIDType();
+        restrictedId.setID(null);
+        PersonalDataType personalDataWithNullID = new PersonalDataType();
+        personalDataWithNullID.setRestrictedID(restrictedId);
+
         try {
-            SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
-                    mock(RealmModel.class),
-                    mock(KeycloakSession.class),
-                    mock(IdentityProvider.AuthenticationCallback.class),
-                    mock(EventBuilder.class),
-                    mock(EidIdentityProvider.class),
-                    mock(EidIdentityProviderModel.class)
-            );
-
-            RestrictedIDType restrictedId = new RestrictedIDType();
-            restrictedId.setID(null);
-            PersonalDataType personalDataWithNullID = new PersonalDataType();
-            personalDataWithNullID.setRestrictedID(restrictedId);
-
             assertNull(getRestrictedIdStringMethod().invoke(sut, personalDataWithNullID));
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
@@ -105,18 +87,18 @@ public class SamlResponseReceiverEndpointUnitTest {
 
     @Test
     void givenPersonalDataWithoutID_whenGetRestrictedId_thenReturnNull() {
+        SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+                mock(RealmModel.class),
+                mock(KeycloakSession.class),
+                mock(IdentityProvider.AuthenticationCallback.class),
+                mock(EventBuilder.class),
+                mock(EidIdentityProvider.class),
+                mock(EidIdentityProviderModel.class)
+        );
+
+        PersonalDataType personalDataWithoutID = new PersonalDataType();
+
         try {
-            SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
-                    mock(RealmModel.class),
-                    mock(KeycloakSession.class),
-                    mock(IdentityProvider.AuthenticationCallback.class),
-                    mock(EventBuilder.class),
-                    mock(EidIdentityProvider.class),
-                    mock(EidIdentityProviderModel.class)
-            );
-
-            PersonalDataType personalDataWithoutID = new PersonalDataType();
-
             assertNull(getRestrictedIdStringMethod().invoke(sut, personalDataWithoutID));
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
@@ -172,13 +154,21 @@ public class SamlResponseReceiverEndpointUnitTest {
         KeycloakContext context = mock(KeycloakContext.class);
         IdentityProviderModel model = mock(IdentityProviderModel.class);
         SamlConfigurationImpl samlConfiguration = mock(SamlConfigurationImpl.class);
-        SamlKeyMaterialImpl samlKeyMaterial = new SamlKeyMaterialImpl(
-                requestSignaturePrivateKeyString,
-                responseDecryptionPublicKeyString,
-                responseDecryptionPrivateKeyString,
-                responseVerificationCertificateString,
-                requestEncryptionCertificateString
-        );
+
+        SamlKeyMaterialImpl samlKeyMaterial;
+        try {
+            String workDir = new File("src/test/resources").getAbsolutePath();
+            samlKeyMaterial = new SamlKeyMaterialImpl(
+                    new String(readAllBytes(Paths.get(workDir + "/keys/samlRequestSignaturePrivateKey.txt"))),
+                    new String(readAllBytes(Paths.get(workDir + "/keys/samlResponseDecryptionPublicKey.txt"))),
+                    new String(readAllBytes(Paths.get(workDir + "/keys/samlResponseDecryptionPrivateKey.txt"))),
+                    new String(readAllBytes(Paths.get(workDir + "/keys/samlResponseVerificationCertificate.txt"))),
+                    new String(readAllBytes(Paths.get(workDir + "/keys/samlRequestEncryptionCertificate.txt")))
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         SamlEidServerConfigurationImpl samlEidServerConfiguration = new SamlEidServerConfigurationImpl("https://dev.id.governikus-eid.de/gov_autent/async");
         SamlServiceProviderConfigurationImpl samlServiceProviderConfiguration = new SamlServiceProviderConfigurationImpl("master", "https://localhost:8443");
         HashMap modelConfigMap = new HashMap<>();

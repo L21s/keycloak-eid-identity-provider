@@ -46,7 +46,8 @@ public class TcTokenEndpoint implements RealmResourceProvider {
     @Produces(MediaType.APPLICATION_JSON)
     public Response eIdClientEntrance(@Context UriInfo uriInfo) {
         try {
-            logger.debug("Received a request on SAML tc-token endpoint. Try to generate a SAML request and redirect to ID PANSTAR.");
+            logger.info("Received a request on tc-token endpoint. Try to generate a SAML request and redirect to ID PANSTAR.");
+
             RequestData requestData = new RequestData()
                     .restrictedID(true)
                     .givenNames(false)
@@ -56,8 +57,14 @@ public class TcTokenEndpoint implements RealmResourceProvider {
                     .seEndorsed(false)
                     .hwKeyStore(true)
                     .cardCertified(true);
+
             String relayState = getQueryParameterOfKey(uriInfo, "RelayState");
             String authSessionId = "_" + getQueryParameterOfKey(uriInfo, "authSessionId"); // has to start with _ because xml ids can't start with numbers
+
+            logger.debug("RelayState is {}", relayState);
+            logger.debug("authSessionId is {}", authSessionId);
+            logger.debug("Realm is {}", session.getContext().getRealm().getName());
+            logger.debug("SAML configuration is {}", session.getContext().getRealm().getIdentityProviderByAlias("eid").getConfig().toString());
 
             String completeUrlWithRequest = new SamlRequestGenerator(
                 new SamlConfigurationImpl(
@@ -66,7 +73,8 @@ public class TcTokenEndpoint implements RealmResourceProvider {
                 )
             ).createSamlRequestUrl(requestData, relayState, authSessionId);
 
-            logger.debug("Successfully created SAML request. eID client will be redirected to ID PANSTAR.");
+            logger.info("Successfully generated SAML request. eID client will be redirected to ID PANSTAR.");
+            logger.debug("Redirect URI is {}", redirectUri);
 
             URI uri = new URI(completeUrlWithRequest);
             return Response.seeOther(uri).build();

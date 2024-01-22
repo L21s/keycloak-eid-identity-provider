@@ -72,12 +72,12 @@ public class TcTokenEndpoint implements RealmResourceProvider {
                         session.getContext().getRealm().getName()
                 )
             ).createSamlRequestUrl(requestData, relayState, authSessionId);
+            URI redirectUri = new URI(completeUrlWithRequest);
 
             logger.info("Successfully generated SAML request. eID client will be redirected to ID PANSTAR.");
             logger.debug("Redirect URI is {}", redirectUri);
 
-            URI uri = new URI(completeUrlWithRequest);
-            return Response.seeOther(uri).build();
+            return Response.seeOther(redirectUri).build();
         } catch (InvalidInputException | SamlRequestException | InitializationException e) {
             logger.debug("Could not create SAML request: " + e);
             return null;

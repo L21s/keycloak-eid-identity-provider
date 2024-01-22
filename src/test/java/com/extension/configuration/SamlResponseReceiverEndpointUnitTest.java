@@ -57,7 +57,7 @@ public class SamlResponseReceiverEndpointUnitTest {
             String restrictedIdOutputString = getRestrictedIdStringMethod().invoke(sut, personalData).toString();
             assertNotNull(restrictedIdOutputString);
             assertEquals(Hex.encodeHexString(restrictedIdInput), restrictedIdOutputString);
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -80,7 +80,7 @@ public class SamlResponseReceiverEndpointUnitTest {
 
         try {
             assertNull(getRestrictedIdStringMethod().invoke(sut, personalDataWithNullID));
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -100,7 +100,7 @@ public class SamlResponseReceiverEndpointUnitTest {
 
         try {
             assertNull(getRestrictedIdStringMethod().invoke(sut, personalDataWithoutID));
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -128,7 +128,7 @@ public class SamlResponseReceiverEndpointUnitTest {
         BrokeredIdentityContext identity = new BrokeredIdentityContext(Hex.encodeHexString("restrictedId".getBytes()));
         try {
             getSetUpIdentityMethod().invoke(sut, identity, eidIdentityProvider, eidIdentityProviderConfig, authSession, samlResponse);
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
 
@@ -237,8 +237,13 @@ public class SamlResponseReceiverEndpointUnitTest {
         return Base64.getEncoder().encodeToString(samlResponseString.replaceAll("\\s", "").getBytes());
     }
 
-    private Method getRestrictedIdStringMethod() throws NoSuchMethodException {
-        Method method = SamlResponseReceiverEndpoint.class.getDeclaredMethod("getRestrictedIdString", PersonalDataType.class);
+    private Method getRestrictedIdStringMethod() {
+        Method method;
+        try {
+            method = SamlResponseReceiverEndpoint.class.getDeclaredMethod("getRestrictedIdString", PersonalDataType.class);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
         method.setAccessible(true);
         return method;
     }
@@ -252,6 +257,20 @@ public class SamlResponseReceiverEndpointUnitTest {
                 AuthenticationSessionModel.class,
                 ProcessedSamlResult.class
         );
+    private Method getSetUpIdentityMethod() {
+        Method method;
+        try {
+            method = SamlResponseReceiverEndpoint.class.getDeclaredMethod(
+                    "setUpIdentity",
+                    BrokeredIdentityContext.class,
+                    EidIdentityProvider.class,
+                    EidIdentityProviderModel.class,
+                    AuthenticationSessionModel.class,
+                    ProcessedSamlResult.class
+            );
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
         method.setAccessible(true);
         return method;
     }

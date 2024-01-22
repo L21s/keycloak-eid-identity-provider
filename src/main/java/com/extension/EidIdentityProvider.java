@@ -35,8 +35,13 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
 
   @Override
   public Response performLogin(AuthenticationRequest request) {
+    logger.info("Requested login with eID. Try to generate TcTokenUri and redirect to AusweisApp.");
+
     String authSessionId = request.getAuthenticationSession().getParentSession().getId();
     String relayState = request.getState().getEncoded();
+
+    logger.debug("authSessionId is {}", authSessionId);
+    logger.debug("RelayState is {}", relayState);
 
     String tcTokenUrl =
         UriBuilder.fromUri(request.getUriInfo().getBaseUri())
@@ -48,10 +53,10 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
             .queryParam("authSessionId", authSessionId)
             .build()
             .toString();
-    logger.debug("tcTokenUrl is {}", tcTokenUrl);
+
+    logger.debug("TcTokenUrl is {}", tcTokenUrl);
 
     try {
-      logger.debug("Request AusweisApp to initialize SAML authentication flow.");
       String userAgentHeader = request.getHttpRequest().getHttpHeaders().getRequestHeader("User-Agent").toString();
       boolean isMobileClient = Stream.of("iPhone", "Android", "Windows Phone").anyMatch(userAgentHeader::contains);
 
@@ -62,7 +67,9 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
       if (!isMobileClient) {
         tcTokenRedirectUri = new URI(TcTokenUtils.getStationaryEidClientUrl(tcTokenUrl));
       }
-      logger.debug("TcTokenRedirectUrl is {}", tcTokenRedirectUri);
+
+      logger.debug("TcTokenRedirectUri is {}", tcTokenRedirectUri);
+      logger.info("Successfully generated TcTokenUri. Redirect to AusweisApp.");
 
       return Response.seeOther(tcTokenRedirectUri).build();
     } catch (Exception e) {

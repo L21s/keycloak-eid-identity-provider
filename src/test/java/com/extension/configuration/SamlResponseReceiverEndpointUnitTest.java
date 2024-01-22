@@ -1,8 +1,11 @@
 package com.extension.configuration;
 
 import com.extension.EidIdentityProvider;
+import de.bund.bsi.eid240.PersonalDataType;
+import de.bund.bsi.eid240.RestrictedIDType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.keycloak.broker.provider.IdentityProvider;
@@ -14,6 +17,8 @@ import org.keycloak.models.RealmModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -22,7 +27,7 @@ import java.util.Base64;
 import java.util.HashMap;
 
 import static java.nio.file.Files.readAllBytes;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +48,74 @@ public class SamlResponseReceiverEndpointUnitTest {
             responseVerificationCertificateString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlResponseVerificationCertificate.txt")));
             requestEncryptionCertificateString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlRequestEncryptionCertificate.txt")));
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void givenPersonalDataWithID_whenGetRestrictedId_thenReturnHexEncodedString() {
+        try {
+            SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+                    mock(RealmModel.class),
+                    mock(KeycloakSession.class),
+                    mock(IdentityProvider.AuthenticationCallback.class),
+                    mock(EventBuilder.class),
+                    mock(EidIdentityProvider.class),
+                    mock(EidIdentityProviderModel.class)
+            );
+
+            byte[] restrictedIdInput = "01234".getBytes();
+            RestrictedIDType restrictedId = new RestrictedIDType();
+            restrictedId.setID(restrictedIdInput);
+            PersonalDataType personalData = new PersonalDataType();
+            personalData.setRestrictedID(restrictedId);
+
+            String restrictedIdOutputString = getRestrictedIdStringMethod().invoke(sut, personalData).toString();
+            assertEquals(Hex.encodeHexString(restrictedIdInput), restrictedIdOutputString);
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void givenPersonalDataWithNullID_whenGetRestrictedId_thenReturnNull() {
+        try {
+            SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+                    mock(RealmModel.class),
+                    mock(KeycloakSession.class),
+                    mock(IdentityProvider.AuthenticationCallback.class),
+                    mock(EventBuilder.class),
+                    mock(EidIdentityProvider.class),
+                    mock(EidIdentityProviderModel.class)
+            );
+
+            RestrictedIDType restrictedId = new RestrictedIDType();
+            restrictedId.setID(null);
+            PersonalDataType personalDataWithNullID = new PersonalDataType();
+            personalDataWithNullID.setRestrictedID(restrictedId);
+
+            assertNull(getRestrictedIdStringMethod().invoke(sut, personalDataWithNullID));
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void givenPersonalDataWithoutID_whenGetRestrictedId_thenReturnNull() {
+        try {
+            SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+                    mock(RealmModel.class),
+                    mock(KeycloakSession.class),
+                    mock(IdentityProvider.AuthenticationCallback.class),
+                    mock(EventBuilder.class),
+                    mock(EidIdentityProvider.class),
+                    mock(EidIdentityProviderModel.class)
+            );
+
+            PersonalDataType personalDataWithoutID = new PersonalDataType();
+
+            assertNull(getRestrictedIdStringMethod().invoke(sut, personalDataWithoutID));
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
@@ -133,5 +206,11 @@ public class SamlResponseReceiverEndpointUnitTest {
                 LocalDateTime.now()
         );
         return Base64.getEncoder().encodeToString(samlResponseString.replaceAll("\\s", "").getBytes());
+    }
+
+    private Method getRestrictedIdStringMethod() throws NoSuchMethodException {
+        Method method = SamlResponseReceiverEndpoint.class.getDeclaredMethod("getRestrictedIdString", PersonalDataType.class);
+        method.setAccessible(true);
+        return method;
     }
 }

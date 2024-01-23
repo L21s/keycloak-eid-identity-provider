@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 public class EidIdentityProviderUnitTest {
 
     @Test
-    void performLoginRedirectsToAusweisAppAndIncludesTcTokenUrl() throws URISyntaxException {
+    void performLoginRedirectsToStationaryAusweisAppAndIncludesTcTokenUrl() throws URISyntaxException {
         AuthenticationRequest request = mock(AuthenticationRequest.class);
         KeycloakSession session = mock(KeycloakSession.class);
         EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);

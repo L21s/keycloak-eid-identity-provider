@@ -5,7 +5,6 @@ import de.bund.bsi.eid240.PersonalDataType;
 import de.governikus.panstar.sdk.saml.exception.SamlAuthenticationException;
 import de.governikus.panstar.sdk.saml.exception.UnsuccessfulSamlAuthenticationProcessException;
 import de.governikus.panstar.sdk.saml.response.ProcessedSamlResult;
-import de.governikus.panstar.sdk.saml.response.SamlResponseHandler;
 import de.governikus.panstar.sdk.utils.exception.InvalidInputException;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.core.Context;
@@ -27,23 +26,25 @@ import org.slf4j.LoggerFactory;
 
 import static org.keycloak.broker.provider.IdentityProvider.AuthenticationCallback;
 
-public class SamlResponseReceiverEndpoint {
+public class EidSamlResponseHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(SamlResponseReceiverEndpoint.class);
+  private static final Logger logger = LoggerFactory.getLogger(EidSamlResponseHandler.class);
   private final KeycloakSession session;
   private final AuthenticationCallback callback;
   private final EventBuilder event;
   private final EidIdentityProvider eidIdentityProvider;
   private final EidIdentityProviderModel eidIdentityProviderConfig;
   private final RealmModel realm;
+  private final EidSamlResponseHandlerFactory samlResponseHandlerFactory;
 
-  public SamlResponseReceiverEndpoint(
+  public EidSamlResponseHandler(
       RealmModel realm,
       KeycloakSession session,
       AuthenticationCallback callback,
       EventBuilder event,
       EidIdentityProvider eidIdentityProvider,
-      EidIdentityProviderModel eidIdentityProviderConfig
+      EidIdentityProviderModel eidIdentityProviderConfig,
+      EidSamlResponseHandlerFactory samlResponseHandlerFactory
   ) {
     this.realm = realm;
     this.session = session;
@@ -51,6 +52,7 @@ public class SamlResponseReceiverEndpoint {
     this.event = event;
     this.eidIdentityProvider = eidIdentityProvider;
     this.eidIdentityProviderConfig = eidIdentityProviderConfig;
+    this.samlResponseHandlerFactory = samlResponseHandlerFactory;
   }
 
   @GET
@@ -59,7 +61,8 @@ public class SamlResponseReceiverEndpoint {
       logger.info("Received a request on SAML response-receiver endpoint. Try to parse a SAML response, set up an identity, and initiate authentication callback.");
       logger.debug("SAML response is {}", uriInfo.getRequestUri().getRawQuery());
 
-      ProcessedSamlResult samlResponse = new SamlResponseHandler(eidIdentityProviderConfig.getSamlConfiguration())
+      ProcessedSamlResult samlResponse = samlResponseHandlerFactory.create(
+              eidIdentityProviderConfig.getSamlConfiguration())
               .parseSamlResponse(uriInfo.getRequestUri().getRawQuery());
 
       logger.info("Successfully parsed SAML response. Try to set up an identity.");

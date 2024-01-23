@@ -4,6 +4,9 @@ import com.extension.EidIdentityProvider;
 import de.bund.bsi.eid240.PersonalDataType;
 import de.bund.bsi.eid240.RestrictedIDType;
 import de.governikus.panstar.sdk.saml.response.ProcessedSamlResult;
+import de.governikus.panstar.sdk.saml.configuration.SamlConfiguration;
+import de.governikus.panstar.sdk.saml.response.SamlResponseHandlerWithoutTimeAssertion;
+import de.governikus.panstar.sdk.utils.exception.InvalidInputException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.apache.commons.codec.binary.Hex;
@@ -27,6 +30,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
+import org.opensaml.core.config.InitializationException;
 
 import static java.nio.file.Files.readAllBytes;
 import static org.junit.jupiter.api.Assertions.*;
@@ -141,7 +145,6 @@ public class SamlResponseReceiverEndpointUnitTest {
     }
 
     @Test
-    @Disabled
     void samlResponseReceiverEndpointParsesPersonalDataAndCreatesIdentityForAuthentication() throws URISyntaxException {
         RealmModel realm = mock(RealmModel.class);
         KeycloakSession session = mock(KeycloakSession.class);
@@ -173,7 +176,10 @@ public class SamlResponseReceiverEndpointUnitTest {
         HashMap modelConfigMap = new HashMap<>();
         modelConfigMap.put("responseReceiverRealm", "master");
         modelConfigMap.put("idPanstarSamlReceiverUri", "https://dev.id.governikus-eid.de/gov_autent/async");
-        SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(realm, session, callback, event, eidIdentityProvider, eidIdentityProviderConfig);
+
+        EidSamlResponseHandler sut = new EidSamlResponseHandler(realm, session, callback, event, eidIdentityProvider,
+            eidIdentityProviderConfig,
+            SamlResponseHandlerWithoutTimeAssertion::new);
 
         when(session.getContext()).thenReturn(context);
         when(context.getRealm()).thenReturn(realm);

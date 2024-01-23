@@ -4,13 +4,10 @@ import com.extension.EidIdentityProvider;
 import de.bund.bsi.eid240.PersonalDataType;
 import de.bund.bsi.eid240.RestrictedIDType;
 import de.governikus.panstar.sdk.saml.response.ProcessedSamlResult;
-import de.governikus.panstar.sdk.saml.configuration.SamlConfiguration;
 import de.governikus.panstar.sdk.saml.response.SamlResponseHandlerWithoutTimeAssertion;
-import de.governikus.panstar.sdk.utils.exception.InvalidInputException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.apache.commons.codec.binary.Hex;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.keycloak.broker.provider.BrokeredIdentityContext;
 import org.keycloak.broker.provider.IdentityProvider;
@@ -30,7 +27,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
-import org.opensaml.core.config.InitializationException;
 
 import static java.nio.file.Files.readAllBytes;
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,13 +37,14 @@ public class EidSamlResponseHandlerUnitTest {
 
     @Test
     void givenPersonalDataWithID_whenGetRestrictedId_thenReturnHexEncodedString() {
-        SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+        EidSamlResponseHandler sut = new EidSamlResponseHandler(
                 mock(RealmModel.class),
                 mock(KeycloakSession.class),
                 mock(IdentityProvider.AuthenticationCallback.class),
                 mock(EventBuilder.class),
                 mock(EidIdentityProvider.class),
-                mock(EidIdentityProviderModel.class)
+                mock(EidIdentityProviderModel.class),
+                mock(EidSamlResponseHandlerFactory.class)
         );
 
         byte[] restrictedIdInput = "01234".getBytes();
@@ -67,13 +64,14 @@ public class EidSamlResponseHandlerUnitTest {
 
     @Test
     void givenPersonalDataWithNullID_whenGetRestrictedId_thenReturnNull() {
-        SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+        EidSamlResponseHandler sut = new EidSamlResponseHandler(
                 mock(RealmModel.class),
                 mock(KeycloakSession.class),
                 mock(IdentityProvider.AuthenticationCallback.class),
                 mock(EventBuilder.class),
                 mock(EidIdentityProvider.class),
-                mock(EidIdentityProviderModel.class)
+                mock(EidIdentityProviderModel.class),
+                mock(EidSamlResponseHandlerFactory.class)
         );
 
         RestrictedIDType restrictedId = new RestrictedIDType();
@@ -90,13 +88,14 @@ public class EidSamlResponseHandlerUnitTest {
 
     @Test
     void givenPersonalDataWithoutID_whenGetRestrictedId_thenReturnNull() {
-        SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+        EidSamlResponseHandler sut = new EidSamlResponseHandler(
                 mock(RealmModel.class),
                 mock(KeycloakSession.class),
                 mock(IdentityProvider.AuthenticationCallback.class),
                 mock(EventBuilder.class),
                 mock(EidIdentityProvider.class),
-                mock(EidIdentityProviderModel.class)
+                mock(EidIdentityProviderModel.class),
+                mock(EidSamlResponseHandlerFactory.class)
         );
 
         PersonalDataType personalDataWithoutID = new PersonalDataType();
@@ -115,13 +114,14 @@ public class EidSamlResponseHandlerUnitTest {
         AuthenticationSessionModel authSession = mock(AuthenticationSessionModel.class);
         ProcessedSamlResult samlResponse = mock(ProcessedSamlResult.class);
         PersonalDataType personalDataType = mock(PersonalDataType.class);
-        SamlResponseReceiverEndpoint sut = new SamlResponseReceiverEndpoint(
+        EidSamlResponseHandler sut = new EidSamlResponseHandler(
                 mock(RealmModel.class),
                 mock(KeycloakSession.class),
                 mock(IdentityProvider.AuthenticationCallback.class),
                 mock(EventBuilder.class),
                 eidIdentityProvider,
-                eidIdentityProviderConfig
+                eidIdentityProviderConfig,
+                mock(EidSamlResponseHandlerFactory.class)
         );
 
         when(samlResponse.getPersonalData()).thenReturn(personalDataType);
@@ -145,20 +145,20 @@ public class EidSamlResponseHandlerUnitTest {
     }
 
     @Test
-    void samlResponseReceiverEndpointParsesPersonalDataAndCreatesIdentityForAuthentication() throws URISyntaxException {
-        RealmModel realm = mock(RealmModel.class);
-        KeycloakSession session = mock(KeycloakSession.class);
-        IdentityProvider.AuthenticationCallback callback = mock(IdentityProvider.AuthenticationCallback.class);
-        EventBuilder event = mock(EventBuilder.class);
-        EidIdentityProvider eidIdentityProvider = mock(EidIdentityProvider.class);
-        EidIdentityProviderModel eidIdentityProviderConfig = mock(EidIdentityProviderModel.class);
-        UriInfo uriInfo = mock(UriInfo.class);
-        KeycloakContext context = mock(KeycloakContext.class);
-        IdentityProviderModel model = mock(IdentityProviderModel.class);
-        SamlConfigurationImpl samlConfiguration = mock(SamlConfigurationImpl.class);
-
-        SamlKeyMaterialImpl samlKeyMaterial;
+    void samlResponseReceiverEndpointParsesPersonalDataAndCreatesIdentityForAuthentication() {
         try {
+            RealmModel realm = mock(RealmModel.class);
+            KeycloakSession session = mock(KeycloakSession.class);
+            IdentityProvider.AuthenticationCallback callback = mock(IdentityProvider.AuthenticationCallback.class);
+            EventBuilder event = mock(EventBuilder.class);
+            EidIdentityProvider eidIdentityProvider = mock(EidIdentityProvider.class);
+            EidIdentityProviderModel eidIdentityProviderConfig = mock(EidIdentityProviderModel.class);
+            UriInfo uriInfo = mock(UriInfo.class);
+            KeycloakContext context = mock(KeycloakContext.class);
+            IdentityProviderModel model = mock(IdentityProviderModel.class);
+            SamlConfigurationImpl samlConfiguration = mock(SamlConfigurationImpl.class);
+
+            SamlKeyMaterialImpl samlKeyMaterial;
             String workDir = new File("src/test/resources").getAbsolutePath();
             samlKeyMaterial = new SamlKeyMaterialImpl(
                     new String(readAllBytes(Paths.get(workDir + "/keys/samlRequestSignaturePrivateKey.txt"))),
@@ -167,39 +167,45 @@ public class EidSamlResponseHandlerUnitTest {
                     new String(readAllBytes(Paths.get(workDir + "/keys/samlResponseVerificationCertificate.txt"))),
                     new String(readAllBytes(Paths.get(workDir + "/keys/samlRequestEncryptionCertificate.txt")))
             );
-        } catch (IOException e) {
+
+            SamlEidServerConfigurationImpl samlEidServerConfiguration = new SamlEidServerConfigurationImpl("https://dev.id.governikus-eid.de/gov_autent/async");
+            SamlServiceProviderConfigurationImpl samlServiceProviderConfiguration = new SamlServiceProviderConfigurationImpl("master", "https://localhost:8443");
+            HashMap modelConfigMap = new HashMap<>();
+            modelConfigMap.put("responseReceiverRealm", "master");
+            modelConfigMap.put("idPanstarSamlReceiverUri", "https://dev.id.governikus-eid.de/gov_autent/async");
+
+            EidSamlResponseHandler sut = new EidSamlResponseHandler(
+                    realm,
+                    session,
+                    callback,
+                    event,
+                    eidIdentityProvider,
+                    eidIdentityProviderConfig,
+                    SamlResponseHandlerWithoutTimeAssertion::new
+            );
+
+            when(session.getContext()).thenReturn(context);
+            when(context.getRealm()).thenReturn(realm);
+            when(realm.getIdentityProviderByAlias("eid")).thenReturn(model);
+            when(model.getConfig()).thenReturn(modelConfigMap);
+            when(eidIdentityProviderConfig.getSamlConfiguration()).thenReturn(samlConfiguration);
+            when(samlConfiguration.getSamlKeyMaterial()).thenReturn(samlKeyMaterial);
+            when(samlConfiguration.getSamlEidServerConfiguration()).thenReturn(samlEidServerConfiguration);
+            when(samlConfiguration.getSamlServiceProviderConfiguration()).thenReturn(samlServiceProviderConfiguration);
+            when(uriInfo.getRequestUri())
+                    .thenReturn(new URI(
+                            "https://localhost:8443/realms/master/broker/eid/endpoint" +
+                                    "?SAMLResponse=" + getEncodedSamlResponse() +
+                                    "&RelayState=AdVKKybhjpB4OxBW9fTbvp3Js87KIwqFd6qqVtkG9VE.SGFMINMrczA.kJynTqBsTu2S42SsqqbGIg" +
+                                    "&SigAlg=http%3A%2F%2Fwww.w3.org%2F2007%2F05%2Fxmldsig-more%23sha256-rsa-MGF1" +
+                                    "&Signature=YWpmQq%2FHrWa3elNAQzjd7xfNGCVVHFWT%2FSpVhFziTYwhvVcOgNIl8F7rEbiFmhASHWR%2F6qyTB6q9Nl%2F3lgFgvfVjPRns%2FNj1cPP0AdQwNQWOQz3YICdNLq0yeA204j8qoPdvgH7P7h6YOl2oV3EwWJcCqcLYOBtKTJ75v9Eg0zrkmOFKCs0S4s5JbDaTtp4lCJN5hjPOfXGBE6WhrzkQhuBzZRs6LASk%2B0XsQXr3oG7GLWxYjuU%2BmNFSDwkCSrm00KZy4XTS3cJ5Hki4nJ8i7wa6gN%2Fit3agvo5U5gJSrxM%2FH%2F%2F1KHJ%2FZuEiz6U2lsnXZDznu8983xlJQvQp3C23%2FMIrAVt4W%2Fge65Pp2mCIs4piSriJ0JNC5QNetfVQhFuplcJJqP05dA%2F9QRgxflVR9Rd6%2Bkt%2BODSAwDFALgwuJO9yuTVTsCNpl7cHJfGyAX9H0pOqs6NDvq2pp%2FsaFyZNcTEnO%2Faq0mNjfa%2FFrWLINNKi9nqN8Gy90XkjqvHYxyhYj4c3vMb468%2FhMHuB560DauFwBeBZpLrz8nKrAb6Mrs62EBycnLNi6FpdNkP73FkWsOIm2u2I2g29qTbuAQgh08HezIkJP%2BJLyvUm1ahp1pxKjy2fvQ7UHZy9gyozvefFugwU73B2L6C5rqedinRX4LV3lA1SM4ch27lBozqbR1o%3D"
+                    ));
+
+            Response response = sut.receiveSamlResponse(uriInfo);
+            assertNotNull(response);
+        } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
-
-        SamlEidServerConfigurationImpl samlEidServerConfiguration = new SamlEidServerConfigurationImpl("https://dev.id.governikus-eid.de/gov_autent/async");
-        SamlServiceProviderConfigurationImpl samlServiceProviderConfiguration = new SamlServiceProviderConfigurationImpl("master", "https://localhost:8443");
-        HashMap modelConfigMap = new HashMap<>();
-        modelConfigMap.put("responseReceiverRealm", "master");
-        modelConfigMap.put("idPanstarSamlReceiverUri", "https://dev.id.governikus-eid.de/gov_autent/async");
-
-        EidSamlResponseHandler sut = new EidSamlResponseHandler(realm, session, callback, event, eidIdentityProvider,
-            eidIdentityProviderConfig,
-            SamlResponseHandlerWithoutTimeAssertion::new);
-
-        when(session.getContext()).thenReturn(context);
-        when(context.getRealm()).thenReturn(realm);
-        when(realm.getIdentityProviderByAlias("eid")).thenReturn(model);
-        when(model.getConfig()).thenReturn(modelConfigMap);
-        when(eidIdentityProviderConfig.getSamlConfiguration()).thenReturn(samlConfiguration);
-        when(samlConfiguration.getSamlKeyMaterial()).thenReturn(samlKeyMaterial);
-        when(samlConfiguration.getSamlEidServerConfiguration()).thenReturn(samlEidServerConfiguration);
-        when(samlConfiguration.getSamlServiceProviderConfiguration()).thenReturn(samlServiceProviderConfiguration);
-        when(uriInfo.getRequestUri())
-                .thenReturn(new URI(
-                        "https://localhost:8443/realms/master/broker/eid/endpoint" +
-                                "?SAMLResponse=" + getEncodedSamlResponse() +
-                                "&RelayState=AdVKKybhjpB4OxBW9fTbvp3Js87KIwqFd6qqVtkG9VE.SGFMINMrczA.kJynTqBsTu2S42SsqqbGIg" +
-                                "&SigAlg=http%3A%2F%2Fwww.w3.org%2F2007%2F05%2Fxmldsig-more%23sha256-rsa-MGF1" +
-                                "&Signature=YWpmQq%2FHrWa3elNAQzjd7xfNGCVVHFWT%2FSpVhFziTYwhvVcOgNIl8F7rEbiFmhASHWR%2F6qyTB6q9Nl%2F3lgFgvfVjPRns%2FNj1cPP0AdQwNQWOQz3YICdNLq0yeA204j8qoPdvgH7P7h6YOl2oV3EwWJcCqcLYOBtKTJ75v9Eg0zrkmOFKCs0S4s5JbDaTtp4lCJN5hjPOfXGBE6WhrzkQhuBzZRs6LASk%2B0XsQXr3oG7GLWxYjuU%2BmNFSDwkCSrm00KZy4XTS3cJ5Hki4nJ8i7wa6gN%2Fit3agvo5U5gJSrxM%2FH%2F%2F1KHJ%2FZuEiz6U2lsnXZDznu8983xlJQvQp3C23%2FMIrAVt4W%2Fge65Pp2mCIs4piSriJ0JNC5QNetfVQhFuplcJJqP05dA%2F9QRgxflVR9Rd6%2Bkt%2BODSAwDFALgwuJO9yuTVTsCNpl7cHJfGyAX9H0pOqs6NDvq2pp%2FsaFyZNcTEnO%2Faq0mNjfa%2FFrWLINNKi9nqN8Gy90XkjqvHYxyhYj4c3vMb468%2FhMHuB560DauFwBeBZpLrz8nKrAb6Mrs62EBycnLNi6FpdNkP73FkWsOIm2u2I2g29qTbuAQgh08HezIkJP%2BJLyvUm1ahp1pxKjy2fvQ7UHZy9gyozvefFugwU73B2L6C5rqedinRX4LV3lA1SM4ch27lBozqbR1o%3D"
-                ));
-
-        Response response = sut.receiveSamlResponse(uriInfo);
-        assertNotNull(response);
     }
 
     private String getEncodedSamlResponse() {
@@ -243,7 +249,7 @@ public class EidSamlResponseHandlerUnitTest {
     private Method getRestrictedIdStringMethod() {
         Method method;
         try {
-            method = SamlResponseReceiverEndpoint.class.getDeclaredMethod("getRestrictedIdString", PersonalDataType.class);
+            method = EidSamlResponseHandler.class.getDeclaredMethod("getRestrictedIdString", PersonalDataType.class);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -251,19 +257,10 @@ public class EidSamlResponseHandlerUnitTest {
         return method;
     }
 
-    private Method getSetUpIdentityMethod() throws NoSuchMethodException {
-        Method method = SamlResponseReceiverEndpoint.class.getDeclaredMethod(
-                "setUpIdentity",
-                BrokeredIdentityContext.class,
-                EidIdentityProvider.class,
-                EidIdentityProviderModel.class,
-                AuthenticationSessionModel.class,
-                ProcessedSamlResult.class
-        );
     private Method getSetUpIdentityMethod() {
         Method method;
         try {
-            method = SamlResponseReceiverEndpoint.class.getDeclaredMethod(
+            method = EidSamlResponseHandler.class.getDeclaredMethod(
                     "setUpIdentity",
                     BrokeredIdentityContext.class,
                     EidIdentityProvider.class,

@@ -28,37 +28,80 @@ import static org.mockito.Mockito.when;
 public class EidIdentityProviderUnitTest {
 
     @Test
-    void performLoginRedirectsToAusweisAppAndIncludesTcTokenUrl() throws URISyntaxException {
-        AuthenticationRequest request = mock(AuthenticationRequest.class);
-        KeycloakSession session = mock(KeycloakSession.class);
-        EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
-        AuthenticationSessionModel authSession = mock(AuthenticationSessionModel.class);
-        RootAuthenticationSessionModel rootSession = mock(RootAuthenticationSessionModel.class);
-        IdentityBrokerState identityBrokerState = mock(IdentityBrokerState.class);
-        UriInfo uriInfo = mock(UriInfo.class);
-        RealmModel realmModel = mock(RealmModel.class);
-        HttpRequest httpRequest = mock(HttpRequest.class);
-        HttpHeaders httpHeaders = mock(HttpHeaders.class);
-        EidIdentityProvider sut = new EidIdentityProvider(session, config);
+    void performLoginRedirectsToStationaryAusweisAppAndIncludesTcTokenUrl() {
+        try {
+            AuthenticationRequest request = mock(AuthenticationRequest.class);
+            KeycloakSession session = mock(KeycloakSession.class);
+            EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
+            AuthenticationSessionModel authSession = mock(AuthenticationSessionModel.class);
+            RootAuthenticationSessionModel rootSession = mock(RootAuthenticationSessionModel.class);
+            IdentityBrokerState identityBrokerState = mock(IdentityBrokerState.class);
+            UriInfo uriInfo = mock(UriInfo.class);
+            RealmModel realmModel = mock(RealmModel.class);
+            HttpRequest httpRequest = mock(HttpRequest.class);
+            HttpHeaders httpHeaders = mock(HttpHeaders.class);
+            EidIdentityProvider sut = new EidIdentityProvider(session, config);
 
-        when(request.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getBaseUri()).thenReturn(new URI("https://localhost:8443"));
-        when(request.getRealm()).thenReturn(realmModel);
-        when(realmModel.getName()).thenReturn("master");
-        when(request.getAuthenticationSession()).thenReturn(authSession);
-        when(authSession.getParentSession()).thenReturn(rootSession);
-        when(request.getAuthenticationSession().getParentSession().getId()).thenReturn("sessionId");
-        when(request.getState()).thenReturn(identityBrokerState);
-        when(request.getState().getEncoded()).thenReturn("state");
-        when(request.getHttpRequest()).thenReturn(httpRequest);
-        when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
-        when(httpHeaders.getRequestHeader("User-Agent")).thenReturn(Arrays.asList("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"));
+            when(request.getUriInfo()).thenReturn(uriInfo);
+            when(uriInfo.getBaseUri()).thenReturn(new URI("https://localhost:8443"));
+            when(request.getRealm()).thenReturn(realmModel);
+            when(realmModel.getName()).thenReturn("master");
+            when(request.getAuthenticationSession()).thenReturn(authSession);
+            when(authSession.getParentSession()).thenReturn(rootSession);
+            when(request.getAuthenticationSession().getParentSession().getId()).thenReturn("sessionId");
+            when(request.getState()).thenReturn(identityBrokerState);
+            when(request.getState().getEncoded()).thenReturn("state");
+            when(request.getHttpRequest()).thenReturn(httpRequest);
+            when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
+            when(httpHeaders.getRequestHeader("User-Agent")).thenReturn(Arrays.asList("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"));
 
-        Response response = sut.performLogin(request);
-        String expectedLocationHeaderValue = "http://127.0.0.1:24727/eID-Client?tcTokenURL="
-                + URLEncoder.encode("https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=state&authSessionId=sessionId", StandardCharsets.UTF_8);
-        assertNotNull(response);
-        assertEquals(303, response.getStatus());
-        assertEquals(expectedLocationHeaderValue, response.getHeaders().getFirst("Location").toString());
+            Response response = sut.performLogin(request);
+            String expectedLocationHeaderValue = "http://127.0.0.1:24727/eID-Client?tcTokenURL="
+                    + URLEncoder.encode("https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=state&authSessionId=sessionId", StandardCharsets.UTF_8);
+            assertNotNull(response);
+            assertEquals(303, response.getStatus());
+            assertEquals(expectedLocationHeaderValue, response.getHeaders().getFirst("Location").toString());
+        } catch(URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void performLoginRedirectsToMobileAusweisAppAndIncludesTcTokenUrl() {
+        try {
+            AuthenticationRequest request = mock(AuthenticationRequest.class);
+            KeycloakSession session = mock(KeycloakSession.class);
+            EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
+            AuthenticationSessionModel authSession = mock(AuthenticationSessionModel.class);
+            RootAuthenticationSessionModel rootSession = mock(RootAuthenticationSessionModel.class);
+            IdentityBrokerState identityBrokerState = mock(IdentityBrokerState.class);
+            UriInfo uriInfo = mock(UriInfo.class);
+            RealmModel realmModel = mock(RealmModel.class);
+            HttpRequest httpRequest = mock(HttpRequest.class);
+            HttpHeaders httpHeaders = mock(HttpHeaders.class);
+            EidIdentityProvider sut = new EidIdentityProvider(session, config);
+
+            when(request.getUriInfo()).thenReturn(uriInfo);
+            when(uriInfo.getBaseUri()).thenReturn(new URI("https://localhost:8443"));
+            when(request.getRealm()).thenReturn(realmModel);
+            when(realmModel.getName()).thenReturn("master");
+            when(request.getAuthenticationSession()).thenReturn(authSession);
+            when(authSession.getParentSession()).thenReturn(rootSession);
+            when(request.getAuthenticationSession().getParentSession().getId()).thenReturn("sessionId");
+            when(request.getState()).thenReturn(identityBrokerState);
+            when(request.getState().getEncoded()).thenReturn("state");
+            when(request.getHttpRequest()).thenReturn(httpRequest);
+            when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
+            when(httpHeaders.getRequestHeader("User-Agent")).thenReturn(Arrays.asList("Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/114.0.5735.99 Mobile/15E148 Safari/604.1"));
+
+            Response response = sut.performLogin(request);
+            String expectedLocationHeaderValue = "eid://127.0.0.1:24727/eID-Client?tcTokenURL="
+                    + URLEncoder.encode("https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=state&authSessionId=sessionId", StandardCharsets.UTF_8);
+            assertNotNull(response);
+            assertEquals(303, response.getStatus());
+            assertEquals(expectedLocationHeaderValue, response.getHeaders().getFirst("Location").toString());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

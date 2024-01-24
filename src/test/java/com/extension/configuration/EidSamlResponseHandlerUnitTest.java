@@ -1,34 +1,29 @@
 package com.extension.configuration;
 
 import com.extension.EidIdentityProvider;
-import de.bund.bsi.eid240.PersonalDataType;
-import de.bund.bsi.eid240.RestrictedIDType;
-import de.governikus.panstar.sdk.saml.response.ProcessedSamlResult;
 import de.governikus.panstar.sdk.saml.response.SamlResponseHandlerWithoutTimeAssertion;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.UriInfo;
-import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.Test;
 import org.keycloak.broker.provider.BrokeredIdentityContext;
 import org.keycloak.broker.provider.IdentityProvider;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
-import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.sessions.AuthenticationSessionProvider;
 import org.keycloak.sessions.RootAuthenticationSessionModel;
+import org.mockito.ArgumentCaptor;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
 import static java.nio.file.Files.readAllBytes;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentCaptor.captor;
 import static org.mockito.Mockito.*;
 
 public class EidSamlResponseHandlerUnitTest {
@@ -79,5 +74,9 @@ public class EidSamlResponseHandlerUnitTest {
 
         sut.receiveSamlResponse(uriInfo);
         verify(callback).authenticated(any(BrokeredIdentityContext.class));
+        ArgumentCaptor<BrokeredIdentityContext> identityCaptor = captor();
+        verify(callback).authenticated(identityCaptor.capture());
+        BrokeredIdentityContext identityValue = identityCaptor.getValue();
+        assertEquals("0f012961e06696c093b2f81412724e9556d115c57c6e4a15f1654b39196b7aab", identityValue.getId());
     }
 }

@@ -25,6 +25,7 @@ public class TcTokenEndpointUnitTest {
 
     @Test
     void createsSamlRequestAndRedirectToIdPanstarServer() {
+        // given a TcTokenEndPoint object
         KeycloakSession session = mock(KeycloakSession.class);
         UriInfo uriInfo = mock(UriInfo.class);
         KeycloakContext context = mock(KeycloakContext.class);
@@ -72,7 +73,10 @@ public class TcTokenEndpointUnitTest {
         when(realm.getIdentityProviderByAlias("eid")).thenReturn(model);
         when(model.getConfig()).thenReturn(modelConfigMap);
 
+        // when SAML request generation is requested
         Response response = sut.eIdClientEntrance(uriInfo);
+
+        // then generate SAML request and redirect to ID Panstar Server
         assertNotNull(response);
         assertEquals(303, response.getStatus());
         assertTrue(response.getHeaders().getFirst("Location").toString().contains("https://dev.id.governikus-eid.de/gov_autent/async?SAMLRequest="));

@@ -30,6 +30,7 @@ public class EidSamlResponseHandlerUnitTest {
 
     @Test
     void receiveSamlResponseParsesPersonalDataAndInitiatesIdentityAuthentication() {
+        // given a valid SAML Response
         RealmModel realm = mock(RealmModel.class);
         KeycloakSession session = mock(KeycloakSession.class);
         IdentityProvider.AuthenticationCallback callback = mock(IdentityProvider.AuthenticationCallback.class);
@@ -72,8 +73,10 @@ public class EidSamlResponseHandlerUnitTest {
         when(authSessionprovider.getRootAuthenticationSession(realm, "7d04d3c0-660e-475b-8679-c84772987d33")).thenReturn(rootAuthSessionModel);
         when(uriInfo.getQueryParameters()).thenReturn(queryParameters);
 
+        // when call receiveSamlResponse method
         sut.receiveSamlResponse(uriInfo);
-        verify(callback).authenticated(any(BrokeredIdentityContext.class));
+
+        // then call method for authenticating identity with given ID
         ArgumentCaptor<BrokeredIdentityContext> identityCaptor = captor();
         verify(callback).authenticated(identityCaptor.capture());
         BrokeredIdentityContext identityValue = identityCaptor.getValue();

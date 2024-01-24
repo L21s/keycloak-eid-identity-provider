@@ -32,6 +32,7 @@ public class EidIdentityProviderUnitTest {
     @Test
     void startAuthenticationWithDesktopClient() {
         try {
+            // given an authentication request with a User-Agent header containing "Macintosh"
             AuthenticationRequest request = mock(AuthenticationRequest.class);
             KeycloakSession session = mock(KeycloakSession.class);
             EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
@@ -57,7 +58,10 @@ public class EidIdentityProviderUnitTest {
             when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
             when(httpHeaders.getRequestHeader("User-Agent")).thenReturn(Arrays.asList("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"));
 
+            // when the authentication is started
             Response response = sut.performLogin(request);
+
+            // then use the desktop client
             String expectedLocationHeaderValue = "http://127.0.0.1:24727/eID-Client?tcTokenURL="
                     + URLEncoder.encode("https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=state&authSessionId=sessionId", StandardCharsets.UTF_8);
             assertNotNull(response);
@@ -71,6 +75,7 @@ public class EidIdentityProviderUnitTest {
     @Test
     void startAuthenticationWithMobileClient() {
         try {
+            // given an authentication request with a User-Agent header containing "iPhone"
             AuthenticationRequest request = mock(AuthenticationRequest.class);
             KeycloakSession session = mock(KeycloakSession.class);
             EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
@@ -96,7 +101,10 @@ public class EidIdentityProviderUnitTest {
             when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
             when(httpHeaders.getRequestHeader("User-Agent")).thenReturn(Arrays.asList("Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/114.0.5735.99 Mobile/15E148 Safari/604.1"));
 
+            // when the authentication is started
             Response response = sut.performLogin(request);
+
+            // then use the mobile client
             String expectedLocationHeaderValue = "eid://127.0.0.1:24727/eID-Client?tcTokenURL="
                     + URLEncoder.encode("https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=state&authSessionId=sessionId", StandardCharsets.UTF_8);
             assertNotNull(response);
@@ -109,7 +117,7 @@ public class EidIdentityProviderUnitTest {
 
     @Test
     void callbackReturnsEidSamlResponseHandler() {
-        // given: all arguments for the callback method are available
+        // given an EidIdentityProvider object
         KeycloakSession session = mock(KeycloakSession.class);
         EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
         RealmModel realm = mock(RealmModel.class);
@@ -117,10 +125,10 @@ public class EidIdentityProviderUnitTest {
         EventBuilder event = mock(EventBuilder.class);
         EidIdentityProvider sut = new EidIdentityProvider(session, config);
 
-        // when: the callback method is called
+        // when the callback method is called
         Object result = sut.callback(realm, callback, event);
 
-        // then: a EidSamlResponseHandler object is returned
+        // then a EidSamlResponseHandler object is returned
         assertInstanceOf(EidSamlResponseHandler.class, result);
     }
 }

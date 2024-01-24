@@ -37,26 +37,32 @@ public class TcTokenEndpointUnitTest {
         Map<String, String> modelConfigMap = new HashMap<>();
         modelConfigMap.put("idPanstarServerUrl", "https://dev.id.governikus-eid.de/gov_autent/async");
         modelConfigMap.put("samlEntityBaseUrl", "https://localhost:8443");
-        modelConfigMap.put(
-                "samlRequestSignaturePrivateKey",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlRequestSignaturePrivateKey.txt")))
-        );
-        modelConfigMap.put(
-                "samlResponseDecryptionPublicKey",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseDecryptionPublicKey.txt")))
-        );
-        modelConfigMap.put(
-                "samlResponseDecryptionPrivateKey",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseDecryptionPrivateKey.txt")))
-        );
-        modelConfigMap.put(
-                "samlResponseVerificationCertificate",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseVerificationCertificate.txt")))
-        );
-        modelConfigMap.put(
-                "samlRequestEncryptionCertificate",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlRequestEncryptionCertificate.txt")))
-        );
+
+        try {
+            modelConfigMap.put(
+                    "samlRequestSignaturePrivateKey",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlRequestSignaturePrivateKey.txt")))
+            );
+            modelConfigMap.put(
+                    "samlResponseDecryptionPublicKey",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseDecryptionPublicKey.txt")))
+            );
+            modelConfigMap.put(
+                    "samlResponseDecryptionPrivateKey",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseDecryptionPrivateKey.txt")))
+            );
+            modelConfigMap.put(
+                    "samlResponseVerificationCertificate",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseVerificationCertificate.txt")))
+            );
+            modelConfigMap.put(
+                    "samlRequestEncryptionCertificate",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlRequestEncryptionCertificate.txt")))
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         TcTokenEndpoint sut = new TcTokenEndpoint(session);
 
         when(uriInfo.getQueryParameters()).thenReturn(queryParameters);

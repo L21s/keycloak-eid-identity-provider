@@ -44,7 +44,7 @@ public class EidSamlResponseHandlerUnitTest {
                 mock(EventBuilder.class),
                 mock(EidIdentityProvider.class),
                 mock(EidIdentityProviderModel.class),
-                mock(EidSamlResponseHandlerFactory.class)
+                mock(SamlResponseHandlerFactory.class)
         );
 
         byte[] restrictedIdInput = "01234".getBytes();
@@ -71,7 +71,7 @@ public class EidSamlResponseHandlerUnitTest {
                 mock(EventBuilder.class),
                 mock(EidIdentityProvider.class),
                 mock(EidIdentityProviderModel.class),
-                mock(EidSamlResponseHandlerFactory.class)
+                mock(SamlResponseHandlerFactory.class)
         );
 
         RestrictedIDType restrictedId = new RestrictedIDType();
@@ -95,7 +95,7 @@ public class EidSamlResponseHandlerUnitTest {
                 mock(EventBuilder.class),
                 mock(EidIdentityProvider.class),
                 mock(EidIdentityProviderModel.class),
-                mock(EidSamlResponseHandlerFactory.class)
+                mock(SamlResponseHandlerFactory.class)
         );
 
         PersonalDataType personalDataWithoutID = new PersonalDataType();
@@ -121,7 +121,7 @@ public class EidSamlResponseHandlerUnitTest {
                 mock(EventBuilder.class),
                 eidIdentityProvider,
                 eidIdentityProviderConfig,
-                mock(EidSamlResponseHandlerFactory.class)
+                mock(SamlResponseHandlerFactory.class)
         );
 
         when(samlResponse.getPersonalData()).thenReturn(personalDataType);

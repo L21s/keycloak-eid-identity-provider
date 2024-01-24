@@ -190,44 +190,6 @@ public class EidSamlResponseHandlerUnitTest {
         verify(callback).authenticated(any(BrokeredIdentityContext.class));
     }
 
-    private String getEncodedSamlResponse() {
-        String samlResponseString =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                        "<saml2p:Response xmlns:saml2p=\"urn:oasis:names:tc:SAML:2.0:protocol\"\n" +
-                        "    Destination=\"https://localhost:8443/realms/master/broker/eid/endpoint\"\n" +
-                        "    ID=\"_f7ca7d47-a6f8-49ea-88de-60df46d3bf9e\" InResponseTo=\"_b851b730-055f-4557-be75-13eca33e6628\"\n" +
-                        "    IssueInstant=\"2024-01-23T09:03:59.426Z\" Version=\"2.0\">\n" +
-                        "    <saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">\n" +
-                        "        https://dev.id.governikus-eid.de</saml2:Issuer>\n" +
-                        "    <saml2p:Status>\n" +
-                        "        <saml2p:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\" />\n" +
-                        "    </saml2p:Status>\n" +
-                        "    <saml2:EncryptedAssertion xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">\n" +
-                        "        <xenc:EncryptedData xmlns:xenc=\"http://www.w3.org/2001/04/xmlenc#\"\n" +
-                        "            Id=\"_43f5ede6d5e7a48255f47b1e460770af\" Type=\"http://www.w3.org/2001/04/xmlenc#Element\">\n" +
-                        "            <xenc:EncryptionMethod Algorithm=\"http://www.w3.org/2009/xmlenc11#aes256-gcm\" />\n" +
-                        "            <ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">\n" +
-                        "                <xenc:EncryptedKey Id=\"_ca39c8cdbe531dd4359f1567c4c956af\">\n" +
-                        "                    <xenc:EncryptionMethod\n" +
-                        "                        Algorithm=\"http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p\">\n" +
-                        "                        <ds:DigestMethod Algorithm=\"http://www.w3.org/2001/04/xmlenc#sha256\" />\n" +
-                        "                    </xenc:EncryptionMethod>\n" +
-                        "                    <xenc:CipherData>\n" +
-                        "                        <xenc:CipherValue>\n" +
-                        "                            ZxLRO0xUE8/qK20/GIs9EO/7LqvPKhyJ/q0+n66ZM0Z5d6joDo7phZVUghLeZEnfniI2Lnwck9dStmwKUhTQT6ar3g6lcthuzEGw7zVWziCplcYJsVYNgcPAGQ9X1+eMbqVdg2hUSRKUL3z/t3K6nSpG1DaJfAaV2GUEpMaXQAgMZAi8YQRCbcuTABQv9rZPcbw/R6AF9+52PXxgHMtxzGlDhCnhay1HdaupVzukiKB4fbjKA3fmLJGkhV4sv2U+v9q3RPPBmgb78z4qAcIubcKl4ecfMnenbRCKxKSTinIr4ggxkiHbGGJ2upC1q7k55gCIWwjM8eP0bMdsrZRFKkKPCZPjPn4UQ8XS25Oop3dMnN73FAJJOSN+9JnYA1Rc5ylIHgwp615aAvozHzd3sgtIFOHebAwSsv9GSw1LAhibM3vR8f6qg3kn7w7gmfA/+hXfOM7gt3Z78KNIoARdVuFdvFZsM43fNuKESioEAC9piErtiMJrH+fTRXMHaGHk494/V1Qf9aDdke0qgn8L4ri+qKj/CUyKq5eYnobtJq43nvwqmblXqppPdfMuzJgB/WSVozbkAv8JFOsNT+pdU6M8TX8o7s8IZP/LjR8CEdeUBNPcgcZWLUWOCJKMpsQPRwLGk3K4+wa+lxMWjVEV5717PrWuf/HoFWl7d/xR4PQ=</xenc:CipherValue>\n" +
-                        "                    </xenc:CipherData>\n" +
-                        "                </xenc:EncryptedKey>\n" +
-                        "            </ds:KeyInfo>\n" +
-                        "            <xenc:CipherData>\n" +
-                        "                <xenc:CipherValue>\n" +
-                        "                    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</xenc:CipherValue>\n" +
-                        "            </xenc:CipherData>\n" +
-                        "        </xenc:EncryptedData>\n" +
-                        "    </saml2:EncryptedAssertion>\n" +
-                        "</saml2p:Response>";
-        return Base64.getEncoder().encodeToString(samlResponseString.replaceAll("\\s", "").getBytes());
-    }
-
     private Method getRestrictedIdStringMethod() {
         Method method;
         try {

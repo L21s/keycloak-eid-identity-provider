@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 public class EidIdentityProviderUnitTest {
 
     @Test
-    void performLoginRedirectsToStationaryAusweisAppAndIncludesTcTokenUrl() {
+    void starAuthenticationWithDesktopClient() {
         try {
             AuthenticationRequest request = mock(AuthenticationRequest.class);
             KeycloakSession session = mock(KeycloakSession.class);
@@ -67,7 +67,7 @@ public class EidIdentityProviderUnitTest {
     }
 
     @Test
-    void performLoginRedirectsToMobileAusweisAppAndIncludesTcTokenUrl() {
+    void starAuthenticationWithMobileClient() {
         try {
             AuthenticationRequest request = mock(AuthenticationRequest.class);
             KeycloakSession session = mock(KeycloakSession.class);

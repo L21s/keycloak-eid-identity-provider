@@ -1,12 +1,15 @@
 package com.extension;
 
 import com.extension.configuration.EidIdentityProviderModel;
+import com.extension.configuration.EidSamlResponseHandler;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.junit.jupiter.api.Test;
 import org.keycloak.broker.provider.AuthenticationRequest;
+import org.keycloak.broker.provider.IdentityProvider;
 import org.keycloak.broker.provider.util.IdentityBrokerState;
+import org.keycloak.events.EventBuilder;
 import org.keycloak.http.HttpRequest;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -19,8 +22,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -103,5 +105,22 @@ public class EidIdentityProviderUnitTest {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    void callbackReturnsEidSamlResponseHandler() {
+        // given: all arguments for the callback method are available
+        KeycloakSession session = mock(KeycloakSession.class);
+        EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
+        RealmModel realm = mock(RealmModel.class);
+        IdentityProvider.AuthenticationCallback callback = mock(IdentityProvider.AuthenticationCallback.class);
+        EventBuilder event = mock(EventBuilder.class);
+        EidIdentityProvider sut = new EidIdentityProvider(session, config);
+
+        // when: the callback method is called
+        Object result = sut.callback(realm, callback, event);
+
+        // then: a EidSamlResponseHandler object is returned
+        assertInstanceOf(EidSamlResponseHandler.class, result);
     }
 }

@@ -160,7 +160,7 @@ public class EidSamlResponseHandlerUnitTest {
         queryParameters.put("authSessionId", List.of("7d04d3c0-660e-475b-8679-c84772987d33"));
 
         String workDir = new File("src/test/resources").getAbsolutePath();
-        HashMap modelConfigMap = new HashMap<>();
+        HashMap<String, String> modelConfigMap = new HashMap<>();
         modelConfigMap.put("responseReceiverRealm", "master");
         modelConfigMap.put("samlEntityBaseUrl", "https://localhost:8443");
         modelConfigMap.put("idPanstarServerUrl", "https://dev.id.governikus-eid.de/gov_autent/async");

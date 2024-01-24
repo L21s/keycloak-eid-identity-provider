@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 public class EidSamlResponseHandlerUnitTest {
 
     @Test
-    void samlResponseReceiverEndpointParsesPersonalDataAndAuthenticatesIdentity() {
+    void receiveSamlResponseParsesPersonalDataAndInitiatesIdentityAuthentication() {
         RealmModel realm = mock(RealmModel.class);
         KeycloakSession session = mock(KeycloakSession.class);
         IdentityProvider.AuthenticationCallback callback = mock(IdentityProvider.AuthenticationCallback.class);

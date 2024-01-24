@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 public class EidIdentityProviderUnitTest {
 
     @Test
-    void starAuthenticationWithDesktopClient() {
+    void startAuthenticationWithDesktopClient() {
         try {
             AuthenticationRequest request = mock(AuthenticationRequest.class);
             KeycloakSession session = mock(KeycloakSession.class);
@@ -69,7 +69,7 @@ public class EidIdentityProviderUnitTest {
     }
 
     @Test
-    void starAuthenticationWithMobileClient() {
+    void startAuthenticationWithMobileClient() {
         try {
             AuthenticationRequest request = mock(AuthenticationRequest.class);
             KeycloakSession session = mock(KeycloakSession.class);

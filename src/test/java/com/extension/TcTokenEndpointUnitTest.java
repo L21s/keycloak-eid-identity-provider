@@ -25,6 +25,7 @@ public class TcTokenEndpointUnitTest {
 
     @Test
     void tcTokenEndpointCreatesSamlRequestAndRedirectsToIdPanstarServer() throws IOException {
+    void createsSamlRequestAndRedirectToIdPanstarServer() {
         KeycloakSession session = mock(KeycloakSession.class);
         UriInfo uriInfo = mock(UriInfo.class);
         KeycloakContext context = mock(KeycloakContext.class);

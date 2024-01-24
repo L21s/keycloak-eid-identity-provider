@@ -143,7 +143,7 @@ public class EidSamlResponseHandlerUnitTest {
     }
 
     @Test
-    void samlResponseReceiverEndpointParsesPersonalDataAndCreatesIdentityForAuthentication() {
+    void samlResponseReceiverEndpointParsesPersonalDataAndAuthenticatesIdentity() {
         RealmModel realm = mock(RealmModel.class);
         KeycloakSession session = mock(KeycloakSession.class);
         IdentityProvider.AuthenticationCallback callback = mock(IdentityProvider.AuthenticationCallback.class);

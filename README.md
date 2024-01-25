@@ -1,5 +1,5 @@
 # eID Identity Provider for Keycloak
-![loop1](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/6273d96c-84ce-479b-8337-1d58a240bf60)
+![Uploading demo.gif…]()
 
 ## Run Keycloak with eID Identity Provider Extension
 `git clone git@github.com:L21s/keycloak-extension.git`  

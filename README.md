@@ -39,7 +39,9 @@ Follow these steps to run Keycloak including the eID identity provider without D
 5. Run `bin/kc.sh start-dev --https-key-store-file=<path-to-keycloak-eid-identity-provider-repository>/src/main/resources/keys/tls-ssl-commcert.p12 --https-key-store-password=123456` to start Keycloak.
 6. Go to `https://localhost:8443` and manually create a user to add and configure an eID identity provider.
 
-If the eID identity provider plugin was registered successfully, you can see the following log for both, the build and the run command.
+If the eID identity provider plugin was registered successfully, `TcTokenEndpointFactory` and `EidIdentityProviderFactory` are detected and logged throught the build and the run command.  
+
+<img width="1730" alt="Bildschirmfoto 2024-01-29 um 12 06 30" src="https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/1844fcfd-b863-4db6-944c-a383e56a3906">
 
 ## Development
 - Build with Maven

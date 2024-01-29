@@ -28,7 +28,7 @@ ID Panstar Server URL `https://dev.id.governikus-eid.de/gov_autent/async` and SA
 In addition, the required keys and certificates are stored at `src/main/resources/keys`.
 They are named after their respective configuration purposes and the order in which they must be selected.  
 
-![screencapture-localhost-8443-admin-master-console-2024-01-29-11_07_58.png](..%2F..%2Fscreencapture-localhost-8443-admin-master-console-2024-01-29-11_07_58.png)
+![screencapture-localhost-8443-admin-master-console-2024-01-29-11_07_58](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/4a24f3e9-9dc7-4238-89a0-4db38819a166)
 
 ### Setup
 - Build project

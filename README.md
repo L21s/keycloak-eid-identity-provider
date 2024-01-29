@@ -30,7 +30,7 @@ They are named after their respective configuration purposes and the order in wh
 
 ![screencapture-localhost-8443-admin-master-console-2024-01-29-11_07_58](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/4a24f3e9-9dc7-4238-89a0-4db38819a166)
 
-### Setup
+### Setup without Docker
 Follow these steps to run Keycloak including the eID identity provider without Docker:
 1. Download Keycloak [here](https://github.com/keycloak/keycloak/releases). 
 2. Go to this project's directory and run `mvn clean package -P dev`.

@@ -46,5 +46,24 @@ If the eID identity provider plugin was registered successfully, `TcTokenEndpoin
 ## Development
 - Build with Maven
 - Code style for IntelliJ
-- Swimlanes with Mermaid
 
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant Keycloak
+    participant AusweisApp
+    participant ID Panstar Server
+    Browser->>Keycloak: Request authentication with eID
+    Keycloak->>Keycloak: Create Tc Token URL
+    Keycloak->>AusweisApp: Redirect with Tc Token URL
+    AusweisApp->>Keycloak: /tc-token for SAML request generation
+    Keycloak->>Keycloak: Generate SAML request
+    Keycloak->>ID Panstar Server: Send SAML request
+    ID Panstar Server->>AusweisApp: Request ID card information
+    AusweisApp->>AusweisApp: Read ID card information
+    AusweisApp->>ID Panstar Server: Send ID card information
+    ID Panstar Server->>ID Panstar Server: Process information and create SAML response 
+    ID Panstar Server->>Keycloak: Send SAML authentication response
+    Keycloak->>Keycloak: Parse SAML response and authenticate or create user
+    Keycloak->>Browser: Retrieve JSON Web Token
+```

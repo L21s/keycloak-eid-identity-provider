@@ -31,12 +31,15 @@ They are named after their respective configuration purposes and the order in wh
 ![screencapture-localhost-8443-admin-master-console-2024-01-29-11_07_58](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/4a24f3e9-9dc7-4238-89a0-4db38819a166)
 
 ### Setup
-- Build project
-- Copy to `providers` directory
-- Run with kc shell
-- Check log for success
-- More details: [Keycloak Server Developer Guide](https://www.keycloak.org/docs/latest/server_development/index.html#_providers)
-- add pictures
+Follow these steps to run Keycloak including the eID identity provider without Docker:
+1. Download Keycloak [here](https://github.com/keycloak/keycloak/releases). 
+2. Go to this project's directory and run `mvn clean package -P dev`.
+3. Copy the content of this project's `target/deploy` directory to the downloaded Keycloak's `providers` directory as described [here](https://www.keycloak.org/docs/latest/server_development/index.html#registering-provider-implementations).
+4. Open the keycloak directory and use `bin/kc.sh build` to build the project including the eID identity provider.
+5. Run `bin/kc.sh start-dev --https-key-store-file=<path-to-keycloak-eid-identity-provider-repository>/src/main/resources/keys/tls-ssl-commcert.p12 --https-key-store-password=123456` to start Keycloak.
+6. Go to `https://localhost:8443` and manually create a user to add and configure an eID identity provider.
+
+If the eID identity provider plugin was registered successfully, you can see the following log for both, the build and the run command.
 
 ## Development
 - Build with Maven

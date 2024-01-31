@@ -1,7 +1,8 @@
 # eID Identity Provider for Keycloak  
 ![Static Badge](https://img.shields.io/badge/Keycloak_Version-23-blue) ![Static Badge](https://img.shields.io/badge/License-MIT-brightgreen)  
 
-![demo](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/6e00db3a-99c3-4fe7-8475-77ec7c90ec34)
+![demo](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/6e00db3a-99c3-4fe7-8475-77ec7c90ec34)  
+
 This plugin delivers the eID identity provider which enables user creation and authentication with the German ID card.
 
 ## Known limitations

@@ -42,23 +42,23 @@ public class TcTokenEndpointUnitTest {
         try {
             modelConfigMap.put(
                     "samlRequestSignaturePrivateKey",
-                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlRequestSignaturePrivateKey.txt")))
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/01samlRequestSignaturePrivateKey.txt")))
             );
             modelConfigMap.put(
                     "samlResponseDecryptionPublicKey",
-                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseDecryptionPublicKey.txt")))
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/02samlResponseDecryptionPublicKey.txt")))
             );
             modelConfigMap.put(
                     "samlResponseDecryptionPrivateKey",
-                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseDecryptionPrivateKey.txt")))
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/03samlResponseDecryptionPrivateKey.txt")))
             );
             modelConfigMap.put(
                     "samlResponseVerificationCertificate",
-                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseVerificationCertificate.txt")))
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/04samlResponseVerificationCertificate.txt")))
             );
             modelConfigMap.put(
                     "samlRequestEncryptionCertificate",
-                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlRequestEncryptionCertificate.txt")))
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/05samlRequestEncryptionCertificate.txt")))
             );
         } catch (IOException e) {
             throw new RuntimeException(e);

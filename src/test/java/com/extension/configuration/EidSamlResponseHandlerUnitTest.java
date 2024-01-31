@@ -53,11 +53,11 @@ public class EidSamlResponseHandlerUnitTest {
         modelConfigMap.put("idPanstarServerUrl", "https://dev.id.governikus-eid.de/gov_autent/async");
 
         try {
-            modelConfigMap.put("samlRequestSignaturePrivateKey", new String(readAllBytes(Paths.get(workDir + "/keys/samlRequestSignaturePrivateKey.txt"))));
-            modelConfigMap.put("samlResponseDecryptionPublicKey", new String(readAllBytes(Paths.get(workDir + "/keys/samlResponseDecryptionPublicKey.txt"))));
-            modelConfigMap.put("samlResponseDecryptionPrivateKey", new String(readAllBytes(Paths.get(workDir + "/keys/samlResponseDecryptionPrivateKey.txt"))));
-            modelConfigMap.put("samlResponseVerificationCertificate", new String(readAllBytes(Paths.get(workDir + "/keys/samlResponseVerificationCertificate.txt"))));
-            modelConfigMap.put("samlRequestEncryptionCertificate", new String(readAllBytes(Paths.get(workDir + "/keys/samlRequestEncryptionCertificate.txt"))));
+            modelConfigMap.put("samlRequestSignaturePrivateKey", new String(readAllBytes(Paths.get(workDir + "/keys/01samlRequestSignaturePrivateKey.txt"))));
+            modelConfigMap.put("samlResponseDecryptionPublicKey", new String(readAllBytes(Paths.get(workDir + "/keys/02samlResponseDecryptionPublicKey.txt"))));
+            modelConfigMap.put("samlResponseDecryptionPrivateKey", new String(readAllBytes(Paths.get(workDir + "/keys/03samlResponseDecryptionPrivateKey.txt"))));
+            modelConfigMap.put("samlResponseVerificationCertificate", new String(readAllBytes(Paths.get(workDir + "/keys/04samlResponseVerificationCertificate.txt"))));
+            modelConfigMap.put("samlRequestEncryptionCertificate", new String(readAllBytes(Paths.get(workDir + "/keys/05samlRequestEncryptionCertificate.txt"))));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

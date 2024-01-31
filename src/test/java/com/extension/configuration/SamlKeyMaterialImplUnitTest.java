@@ -27,11 +27,11 @@ public class SamlKeyMaterialImplUnitTest {
 
     static {
         try {
-            requestSignaturePrivateKeyString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlRequestSignaturePrivateKey.txt")));
-            responseDecryptionPublicKeyString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlResponseDecryptionPublicKey.txt")));
-            responseDecryptionPrivateKeyString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlResponseDecryptionPrivateKey.txt")));
-            responseVerificationCertificateString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlResponseVerificationCertificate.txt")));
-            requestEncryptionCertificateString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/samlRequestEncryptionCertificate.txt")));
+            requestSignaturePrivateKeyString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/01samlRequestSignaturePrivateKey.txt")));
+            responseDecryptionPublicKeyString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/02samlResponseDecryptionPublicKey.txt")));
+            responseDecryptionPrivateKeyString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/03samlResponseDecryptionPrivateKey.txt")));
+            responseVerificationCertificateString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/04samlResponseVerificationCertificate.txt")));
+            requestEncryptionCertificateString = new String(readAllBytes(Paths.get(WORK_DIR + "/keys/05samlRequestEncryptionCertificate.txt")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

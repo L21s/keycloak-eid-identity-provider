@@ -1,7 +1,7 @@
-package com.extension;
+package com.l21s.keycloak.social;
 
-import com.extension.configuration.EidIdentityProviderModel;
-import com.extension.configuration.EidSamlResponseHandler;
+import com.l21s.keycloak.social.configuration.EidIdentityProviderModel;
+import com.l21s.keycloak.social.configuration.EidSamlResponseHandler;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;

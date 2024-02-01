@@ -1,4 +1,4 @@
-package com.extension;
+package com.l21s.keycloak.social;
 
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.Response;

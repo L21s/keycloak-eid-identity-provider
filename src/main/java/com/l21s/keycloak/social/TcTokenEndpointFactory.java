@@ -1,4 +1,4 @@
-package com.extension;
+package com.l21s.keycloak.social;
 
 import org.keycloak.Config;
 import org.keycloak.models.KeycloakSession;

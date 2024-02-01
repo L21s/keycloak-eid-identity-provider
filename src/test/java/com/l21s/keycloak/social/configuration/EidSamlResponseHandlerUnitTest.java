@@ -1,6 +1,6 @@
-package com.extension.configuration;
+package com.l21s.keycloak.social.configuration;
 
-import com.extension.EidIdentityProvider;
+import com.l21s.keycloak.social.EidIdentityProvider;
 import de.governikus.panstar.sdk.saml.response.SamlResponseHandlerWithoutTimeAssertion;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.UriInfo;
@@ -13,6 +13,7 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.sessions.AuthenticationSessionProvider;
 import org.keycloak.sessions.RootAuthenticationSessionModel;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class EidSamlResponseHandlerUnitTest {
         IdentityProvider.AuthenticationCallback callback = mock(IdentityProvider.AuthenticationCallback.class);
         EventBuilder event = mock(EventBuilder.class);
         EidIdentityProvider eidIdentityProvider = mock(EidIdentityProvider.class);
-        EidIdentityProviderModel eidIdentityProviderConfig = mock(EidIdentityProviderModel.class);
+        EidIdentityProviderModel eidIdentityProviderConfig = Mockito.mock(EidIdentityProviderModel.class);
         UriInfo uriInfo = mock(UriInfo.class);
         URI uri = mock(URI.class);
         AuthenticationSessionProvider authSessionprovider = mock(AuthenticationSessionProvider.class);

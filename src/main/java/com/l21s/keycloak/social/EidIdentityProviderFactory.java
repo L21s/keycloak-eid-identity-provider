@@ -1,6 +1,6 @@
-package com.extension;
+package com.l21s.keycloak.social;
 
-import com.extension.configuration.EidIdentityProviderModel;
+import com.l21s.keycloak.social.configuration.EidIdentityProviderModel;
 import org.keycloak.Config;
 import org.keycloak.broker.provider.AbstractIdentityProviderFactory;
 import org.keycloak.models.IdentityProviderModel;

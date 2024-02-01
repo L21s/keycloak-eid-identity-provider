@@ -1,4 +1,4 @@
-package com.extension.configuration;
+package com.l21s.keycloak.social.configuration;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package com.extension;
+package com.l21s.keycloak.social;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import org.junit.jupiter.api.Disabled;

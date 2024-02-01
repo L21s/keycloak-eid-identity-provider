@@ -1,4 +1,4 @@
-package com.extension.configuration;
+package com.l21s.keycloak.social.configuration;
 
 import de.governikus.panstar.sdk.saml.configuration.SamlServiceProviderConfiguration;
 import org.slf4j.Logger;

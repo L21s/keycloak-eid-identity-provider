@@ -1,8 +1,8 @@
-package com.extension;
+package com.l21s.keycloak.social;
 
-import com.extension.configuration.EidIdentityProviderModel;
-import com.extension.configuration.EidSamlResponseHandler;
-import com.extension.configuration.SamlResponseHandlerFactoryImpl;
+import com.l21s.keycloak.social.configuration.EidIdentityProviderModel;
+import com.l21s.keycloak.social.configuration.EidSamlResponseHandler;
+import com.l21s.keycloak.social.configuration.SamlResponseHandlerFactoryImpl;
 import de.governikus.panstar.sdk.utils.TcTokenUtils;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

@@ -1,6 +1,6 @@
-package com.extension.configuration;
+package com.l21s.keycloak.social.configuration;
 
-import com.extension.EidIdentityProvider;
+import com.l21s.keycloak.social.EidIdentityProvider;
 import de.bund.bsi.eid240.PersonalDataType;
 import de.governikus.panstar.sdk.saml.exception.SamlAuthenticationException;
 import de.governikus.panstar.sdk.saml.exception.UnsuccessfulSamlAuthenticationProcessException;

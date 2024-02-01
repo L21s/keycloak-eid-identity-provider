@@ -1,6 +1,6 @@
-package com.extension;
+package com.l21s.keycloak.social;
 
-import com.extension.configuration.SamlConfigurationImpl;
+import com.l21s.keycloak.social.configuration.SamlConfigurationImpl;
 import de.governikus.panstar.sdk.saml.exception.SamlRequestException;
 import de.governikus.panstar.sdk.saml.request.SamlRequestGenerator;
 import de.governikus.panstar.sdk.utils.RequestData;

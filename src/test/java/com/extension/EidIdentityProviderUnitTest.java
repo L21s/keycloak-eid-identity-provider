@@ -1,12 +1,15 @@
 package com.extension;
 
 import com.extension.configuration.EidIdentityProviderModel;
+import com.extension.configuration.EidSamlResponseHandler;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.junit.jupiter.api.Test;
 import org.keycloak.broker.provider.AuthenticationRequest;
+import org.keycloak.broker.provider.IdentityProvider;
 import org.keycloak.broker.provider.util.IdentityBrokerState;
+import org.keycloak.events.EventBuilder;
 import org.keycloak.http.HttpRequest;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -19,8 +22,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,8 +30,9 @@ import static org.mockito.Mockito.when;
 public class EidIdentityProviderUnitTest {
 
     @Test
-    void performLoginRedirectsToStationaryAusweisAppAndIncludesTcTokenUrl() {
+    void startAuthenticationWithDesktopClient() {
         try {
+            // given an authentication request with a User-Agent header containing "Macintosh"
             AuthenticationRequest request = mock(AuthenticationRequest.class);
             KeycloakSession session = mock(KeycloakSession.class);
             EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
@@ -55,7 +58,10 @@ public class EidIdentityProviderUnitTest {
             when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
             when(httpHeaders.getRequestHeader("User-Agent")).thenReturn(Arrays.asList("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"));
 
+            // when the authentication is started
             Response response = sut.performLogin(request);
+
+            // then use the desktop client
             String expectedLocationHeaderValue = "http://127.0.0.1:24727/eID-Client?tcTokenURL="
                     + URLEncoder.encode("https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=state&authSessionId=sessionId", StandardCharsets.UTF_8);
             assertNotNull(response);
@@ -67,8 +73,9 @@ public class EidIdentityProviderUnitTest {
     }
 
     @Test
-    void performLoginRedirectsToMobileAusweisAppAndIncludesTcTokenUrl() {
+    void startAuthenticationWithMobileClient() {
         try {
+            // given an authentication request with a User-Agent header containing "iPhone"
             AuthenticationRequest request = mock(AuthenticationRequest.class);
             KeycloakSession session = mock(KeycloakSession.class);
             EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
@@ -94,7 +101,10 @@ public class EidIdentityProviderUnitTest {
             when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
             when(httpHeaders.getRequestHeader("User-Agent")).thenReturn(Arrays.asList("Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/114.0.5735.99 Mobile/15E148 Safari/604.1"));
 
+            // when the authentication is started
             Response response = sut.performLogin(request);
+
+            // then use the mobile client
             String expectedLocationHeaderValue = "eid://127.0.0.1:24727/eID-Client?tcTokenURL="
                     + URLEncoder.encode("https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=state&authSessionId=sessionId", StandardCharsets.UTF_8);
             assertNotNull(response);
@@ -103,5 +113,22 @@ public class EidIdentityProviderUnitTest {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    void callbackReturnsEidSamlResponseHandler() {
+        // given an EidIdentityProvider object
+        KeycloakSession session = mock(KeycloakSession.class);
+        EidIdentityProviderModel config = mock(EidIdentityProviderModel.class);
+        RealmModel realm = mock(RealmModel.class);
+        IdentityProvider.AuthenticationCallback callback = mock(IdentityProvider.AuthenticationCallback.class);
+        EventBuilder event = mock(EventBuilder.class);
+        EidIdentityProvider sut = new EidIdentityProvider(session, config);
+
+        // when the callback method is called
+        Object result = sut.callback(realm, callback, event);
+
+        // then a EidSamlResponseHandler object is returned
+        assertInstanceOf(EidSamlResponseHandler.class, result);
     }
 }

@@ -35,7 +35,7 @@ public class EidSamlResponseHandler {
   private final EidIdentityProvider eidIdentityProvider;
   private final EidIdentityProviderModel eidIdentityProviderConfig;
   private final RealmModel realm;
-  private final EidSamlResponseHandlerFactory samlResponseHandlerFactory;
+  private final SamlResponseHandlerFactory samlResponseHandlerFactory;
 
   public EidSamlResponseHandler(
       RealmModel realm,
@@ -44,7 +44,7 @@ public class EidSamlResponseHandler {
       EventBuilder event,
       EidIdentityProvider eidIdentityProvider,
       EidIdentityProviderModel eidIdentityProviderConfig,
-      EidSamlResponseHandlerFactory samlResponseHandlerFactory
+      SamlResponseHandlerFactory samlResponseHandlerFactory
   ) {
     this.realm = realm;
     this.session = session;

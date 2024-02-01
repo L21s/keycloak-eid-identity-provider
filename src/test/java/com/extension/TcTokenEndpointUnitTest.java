@@ -24,7 +24,8 @@ import static org.mockito.Mockito.when;
 public class TcTokenEndpointUnitTest {
 
     @Test
-    void tcTokenEndpointCreatesSamlRequestAndRedirectsToIdPanstarServer() throws IOException {
+    void createsSamlRequestAndRedirectToIdPanstarServer() {
+        // given a TcTokenEndPoint object
         KeycloakSession session = mock(KeycloakSession.class);
         UriInfo uriInfo = mock(UriInfo.class);
         KeycloakContext context = mock(KeycloakContext.class);
@@ -37,26 +38,32 @@ public class TcTokenEndpointUnitTest {
         Map<String, String> modelConfigMap = new HashMap<>();
         modelConfigMap.put("idPanstarServerUrl", "https://dev.id.governikus-eid.de/gov_autent/async");
         modelConfigMap.put("samlEntityBaseUrl", "https://localhost:8443");
-        modelConfigMap.put(
-                "samlRequestSignaturePrivateKey",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlRequestSignaturePrivateKey.txt")))
-        );
-        modelConfigMap.put(
-                "samlResponseDecryptionPublicKey",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseDecryptionPublicKey.txt")))
-        );
-        modelConfigMap.put(
-                "samlResponseDecryptionPrivateKey",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseDecryptionPrivateKey.txt")))
-        );
-        modelConfigMap.put(
-                "samlResponseVerificationCertificate",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlResponseVerificationCertificate.txt")))
-        );
-        modelConfigMap.put(
-                "samlRequestEncryptionCertificate",
-                new String(Files.readAllBytes(Paths.get(workingDir + "/keys/samlRequestEncryptionCertificate.txt")))
-        );
+
+        try {
+            modelConfigMap.put(
+                    "samlRequestSignaturePrivateKey",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/01samlRequestSignaturePrivateKey.txt")))
+            );
+            modelConfigMap.put(
+                    "samlResponseDecryptionPublicKey",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/02samlResponseDecryptionPublicKey.txt")))
+            );
+            modelConfigMap.put(
+                    "samlResponseDecryptionPrivateKey",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/03samlResponseDecryptionPrivateKey.txt")))
+            );
+            modelConfigMap.put(
+                    "samlResponseVerificationCertificate",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/04samlResponseVerificationCertificate.txt")))
+            );
+            modelConfigMap.put(
+                    "samlRequestEncryptionCertificate",
+                    new String(Files.readAllBytes(Paths.get(workingDir + "/keys/05samlRequestEncryptionCertificate.txt")))
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         TcTokenEndpoint sut = new TcTokenEndpoint(session);
 
         when(uriInfo.getQueryParameters()).thenReturn(queryParameters);
@@ -66,7 +73,10 @@ public class TcTokenEndpointUnitTest {
         when(realm.getIdentityProviderByAlias("eid")).thenReturn(model);
         when(model.getConfig()).thenReturn(modelConfigMap);
 
+        // when SAML request generation is requested
         Response response = sut.eIdClientEntrance(uriInfo);
+
+        // then generate SAML request and redirect to ID Panstar Server
         assertNotNull(response);
         assertEquals(303, response.getStatus());
         assertTrue(response.getHeaders().getFirst("Location").toString().contains("https://dev.id.governikus-eid.de/gov_autent/async?SAMLRequest="));

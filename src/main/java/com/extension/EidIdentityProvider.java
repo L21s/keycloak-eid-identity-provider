@@ -2,7 +2,7 @@ package com.extension;
 
 import com.extension.configuration.EidIdentityProviderModel;
 import com.extension.configuration.EidSamlResponseHandler;
-import com.extension.configuration.EidSamlResponseHandlerFactoryImpl;
+import com.extension.configuration.SamlResponseHandlerFactoryImpl;
 import de.governikus.panstar.sdk.utils.TcTokenUtils;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -31,7 +31,7 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
 
   @Override
   public Object callback(RealmModel realm, IdentityProvider.AuthenticationCallback callback, EventBuilder event) {
-    return new EidSamlResponseHandler(realm, session, callback, event, this, config, new EidSamlResponseHandlerFactoryImpl());
+    return new EidSamlResponseHandler(realm, session, callback, event, this, config, new SamlResponseHandlerFactoryImpl());
   }
 
   @Override

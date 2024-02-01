@@ -1,5 +1,5 @@
 # eID Identity Provider for Keycloak  
-![Keycloak Version](https://img.shields.io/badge/Keycloak_Version-23-blue) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow)  ![Build](https://github.com/L21s/keycloak-eid-identity-provider/actions/workflows/build.yaml/badge.svg)  
+![Keycloak Version](https://img.shields.io/badge/Keycloak_Version-23-blue) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow)  ![Build](https://github.com/L21s/keycloak-eid-identity-provider/actions/workflows/build.yaml/badge.svg?branch=feature/maven-repository)  
 
 ![demo](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/6e00db3a-99c3-4fe7-8475-77ec7c90ec34)  
 

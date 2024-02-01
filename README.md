@@ -25,6 +25,7 @@ Use the following commands to set up Keycloak with the eID identity provider plu
 `docker-compose up`
 
 ### Configuration
+#### Keycloak
 Go to `https://localhost:8443` and log in to the Keycloak Admin UI with `admin` as Username and Password, go to identity providers, and select eID.
 For a fully functional eID identity provider, Client Id and Client Secret are not necessary but the current Keycloak implementation requires dummy values. More information are provided [here](https://github.com/keycloak/keycloak/issues/21891).
 ID Panstar Server URL `https://dev.id.governikus-eid.de/gov_autent/async` and SAML Request Entity Base URL `https://localhost:8443` must be configured.
@@ -32,6 +33,11 @@ In addition, the required keys and certificates are stored at `src/main/resource
 They are named after their respective configuration purposes and the order in which they must be selected.  
 
 ![screencapture-localhost-8443-admin-master-console-2024-01-29-11_07_58](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/4a24f3e9-9dc7-4238-89a0-4db38819a166)
+
+#### AusweisApp
+For a quick start, the AusweisApp must be configured to simulate an ID card. Therefore, the developer mode must be activated as described [here](https://www.ausweisapp.bund.de/ausweisapp2/help/1.20/en/Windows/settings-developer.html#aktivieren-des-entwicklermodus).
+Afterward, go to Settings -> Developer options and activate the internal card simulator.
+Now, everything is set to go to `https://localhost:8443`, log out of the admin console, and click `eid` to start the authentication process.  
 
 ### Setup without Docker
 Follow these steps to run Keycloak including the eID identity provider without Docker:

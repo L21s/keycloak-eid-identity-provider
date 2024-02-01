@@ -47,9 +47,6 @@ If the eID identity provider plugin was registered successfully, `TcTokenEndpoin
 <img width="1730" alt="Bildschirmfoto 2024-01-29 um 12 06 30" src="https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/1844fcfd-b863-4db6-944c-a383e56a3906">
 
 ## Development
-- Build with Maven
-- Code style for IntelliJ
-
 ```mermaid
 sequenceDiagram
     participant Browser
@@ -57,8 +54,8 @@ sequenceDiagram
     participant AusweisApp
     participant ID Panstar Server
     Browser->>Keycloak: Request authentication with eID
-    Keycloak->>Keycloak: Create Tc Token URL
-    Keycloak->>AusweisApp: Redirect with Tc Token URL
+    Keycloak->>Browser: Generate Tc Token URL
+    Browser->>AusweisApp: Redirect with Tc Token URL
     AusweisApp->>Keycloak: Request Tc Token Endpoint
     Keycloak->>Keycloak: Generate SAML request
     Keycloak->>ID Panstar Server: Send SAML request

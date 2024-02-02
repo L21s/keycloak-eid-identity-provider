@@ -61,18 +61,22 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
       String userAgentHeader = request.getHttpRequest().getHttpHeaders().getRequestHeader("User-Agent").toString();
       boolean isMobileClient = Stream.of("iPhone", "Android", "Windows Phone").anyMatch(userAgentHeader::contains);
 
-      URI tcTokenRedirectUri = null;
+      String tcTokenRedirectUri = null;
       if (isMobileClient) {
-        tcTokenRedirectUri = new URI(TcTokenUtils.getMobileEidClientUrl(tcTokenUrl));
+        tcTokenRedirectUri = TcTokenUtils.getMobileEidClientUrl(tcTokenUrl);
       }
       if (!isMobileClient) {
-        tcTokenRedirectUri = new URI(TcTokenUtils.getStationaryEidClientUrl(tcTokenUrl));
+        tcTokenRedirectUri = TcTokenUtils.getStationaryEidClientUrl(tcTokenUrl);
       }
 
       logger.debug("TcTokenRedirectUri is {}", tcTokenRedirectUri);
       logger.info("Successfully generated TcTokenUri. Redirect to AusweisApp.");
 
-      return Response.seeOther(tcTokenRedirectUri).build();
+      String redirectUriString = String.format("https://localhost:8443/realms/master/eid-client-availability-endpoint/availability/?TcTokenRedirectUri=%s", tcTokenRedirectUri);
+
+      logger.info("Browser checks availability of AusweisApp with {}", redirectUriString);
+
+      return Response.seeOther(new URI(redirectUriString)).build();
     } catch (Exception e) {
       throw new IdentityBrokerException("Could not create authentication request.", e);
     }

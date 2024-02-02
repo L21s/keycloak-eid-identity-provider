@@ -7,7 +7,7 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HTTPS_KEY_STORE_FILE: /opt/keycloak/conf/tls-ssl-commcert.p12
       KC_HTTPS_KEY_STORE_PASSWORD: 123456
-      KC_LOG_LEVEL: INFO
+      KC_LOG_LEVEL: DEBUG
     command: ["start-dev"]
     volumes:
       - ./target/deploy:/opt/keycloak/providers/

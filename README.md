@@ -53,6 +53,11 @@ If the eID identity provider plugin was registered successfully, `TcTokenEndpoin
 <img width="1730" alt="Bildschirmfoto 2024-01-29 um 12 06 30" src="https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/1844fcfd-b863-4db6-944c-a383e56a3906">
 
 ## Development
+### Code style
+The [Google Java Style](https://google.github.io/styleguide/javaguide.html) is used for this project.
+Run `mvn com.spotify.fmt:fmt-maven-plugin:format` to format your code accordingly. If the code is not formatted correctly, the build will fail. 
+
+### Authentication flow
 ```mermaid
 sequenceDiagram
     participant Browser

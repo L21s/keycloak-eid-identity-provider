@@ -1,5 +1,7 @@
 package com.l21s.keycloak.social.configuration;
 
+import static org.keycloak.broker.provider.IdentityProvider.AuthenticationCallback;
+
 import com.l21s.keycloak.social.EidIdentityProvider;
 import de.bund.bsi.eid240.PersonalDataType;
 import de.governikus.panstar.sdk.saml.exception.SamlAuthenticationException;
@@ -24,8 +26,6 @@ import org.opensaml.core.config.InitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.keycloak.broker.provider.IdentityProvider.AuthenticationCallback;
-
 public class EidSamlResponseHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(EidSamlResponseHandler.class);
@@ -44,8 +44,7 @@ public class EidSamlResponseHandler {
       EventBuilder event,
       EidIdentityProvider eidIdentityProvider,
       EidIdentityProviderModel eidIdentityProviderConfig,
-      SamlResponseHandlerFactory samlResponseHandlerFactory
-  ) {
+      SamlResponseHandlerFactory samlResponseHandlerFactory) {
     this.realm = realm;
     this.session = session;
     this.callback = callback;
@@ -58,37 +57,43 @@ public class EidSamlResponseHandler {
   @GET
   public Response receiveSamlResponse(@Context UriInfo uriInfo) {
     try {
-      logger.info("Received a request on SAML response-receiver endpoint. Try to parse a SAML response, set up an identity, and initiate authentication callback.");
+      logger.info(
+          "Received a request on SAML response-receiver endpoint. Try to parse a SAML response, set up an identity, and initiate authentication callback.");
       logger.debug("SAML response is {}", uriInfo.getRequestUri().getRawQuery());
 
-      ProcessedSamlResult samlResponse = samlResponseHandlerFactory.create(
-              eidIdentityProviderConfig.getSamlConfiguration())
+      ProcessedSamlResult samlResponse =
+          samlResponseHandlerFactory
+              .create(eidIdentityProviderConfig.getSamlConfiguration())
               .parseSamlResponse(uriInfo.getRequestUri().getRawQuery());
 
       logger.info("Successfully parsed SAML response. Try to set up an identity.");
 
-      BrokeredIdentityContext identity = new BrokeredIdentityContext(
-              getRestrictedIdString(samlResponse.getPersonalData()));
+      BrokeredIdentityContext identity =
+          new BrokeredIdentityContext(getRestrictedIdString(samlResponse.getPersonalData()));
       AuthenticationSessionModel authSession = getAuthSession(uriInfo, samlResponse);
-      setUpIdentity(identity, eidIdentityProvider, eidIdentityProviderConfig, authSession, samlResponse);
+      setUpIdentity(
+          identity, eidIdentityProvider, eidIdentityProviderConfig, authSession, samlResponse);
 
       logger.info("Successfully set up identity. Initiate authentication callback.");
 
       return callback.authenticated(identity);
-    } catch (InitializationException | InvalidInputException | SamlAuthenticationException |
-             UnsuccessfulSamlAuthenticationProcessException e) {
+    } catch (InitializationException
+        | InvalidInputException
+        | SamlAuthenticationException
+        | UnsuccessfulSamlAuthenticationProcessException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private AuthenticationSessionModel getAuthSession(UriInfo uriInfo, ProcessedSamlResult samlResponse) {
+  private AuthenticationSessionModel getAuthSession(
+      UriInfo uriInfo, ProcessedSamlResult samlResponse) {
     // we retrieve the root authentication session via the id
     // this is needed as we can't use the "normal" mechanisms as the client that calls this
     // endpoint is the AusweisApp, which is NOT running in the browser and thus, does not
     // have the necessary KC_SESSION_ID cookies etc
     String authSessionId = samlResponse.getInResponseTo().substring(1);
-    RootAuthenticationSessionModel rootAuthSession = session.authenticationSessions()
-        .getRootAuthenticationSession(realm, authSessionId);
+    RootAuthenticationSessionModel rootAuthSession =
+        session.authenticationSessions().getRootAuthenticationSession(realm, authSessionId);
     // then we can retrieve the initiating authSession via the tabId
     String relayState = uriInfo.getQueryParameters().getFirst("RelayState");
     IdentityBrokerState identityBrokerState = IdentityBrokerState.encoded(relayState, realm);
@@ -97,27 +102,27 @@ public class EidSamlResponseHandler {
   }
 
   private String getRestrictedIdString(PersonalDataType personalDataType) {
-    if (personalDataType == null || personalDataType.getRestrictedID() == null || ArrayUtils.isEmpty(
-        personalDataType.getRestrictedID().getID())) {
+    if (personalDataType == null
+        || personalDataType.getRestrictedID() == null
+        || ArrayUtils.isEmpty(personalDataType.getRestrictedID().getID())) {
       return null;
     }
     return Hex.encodeHexString(personalDataType.getRestrictedID().getID());
   }
 
-    private void setUpIdentity(
-            BrokeredIdentityContext identity,
-            EidIdentityProvider eidIdentityProvider,
-            EidIdentityProviderModel eidIdentityProviderConfig,
-            AuthenticationSessionModel authSession,
-            ProcessedSamlResult samlResponse
-    ) {
-        identity.setIdp(eidIdentityProvider);
-        identity.setIdpConfig(eidIdentityProviderConfig);
-        identity.setAuthenticationSession(authSession);
-        String givenName = samlResponse.getPersonalData().getGivenNames().toLowerCase();
-        String familyName = samlResponse.getPersonalData().getFamilyNames().toLowerCase();
-        identity.setUsername(givenName + "_" + familyName);
-        identity.setFirstName(givenName);
-        identity.setLastName(familyName);
-    }
+  private void setUpIdentity(
+      BrokeredIdentityContext identity,
+      EidIdentityProvider eidIdentityProvider,
+      EidIdentityProviderModel eidIdentityProviderConfig,
+      AuthenticationSessionModel authSession,
+      ProcessedSamlResult samlResponse) {
+    identity.setIdp(eidIdentityProvider);
+    identity.setIdpConfig(eidIdentityProviderConfig);
+    identity.setAuthenticationSession(authSession);
+    String givenName = samlResponse.getPersonalData().getGivenNames().toLowerCase();
+    String familyName = samlResponse.getPersonalData().getFamilyNames().toLowerCase();
+    identity.setUsername(givenName + "_" + familyName);
+    identity.setFirstName(givenName);
+    identity.setLastName(familyName);
+  }
 }

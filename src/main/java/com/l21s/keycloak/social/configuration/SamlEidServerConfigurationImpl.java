@@ -4,14 +4,14 @@ import de.governikus.panstar.sdk.saml.configuration.SamlEidServerConfiguration;
 
 public class SamlEidServerConfigurationImpl implements SamlEidServerConfiguration {
 
-    public String idPanstarServerUrl;
+  public String idPanstarServerUrl;
 
-    public SamlEidServerConfigurationImpl(String idPanstarServerUrl) {
-        this.idPanstarServerUrl = idPanstarServerUrl;
-    }
+  public SamlEidServerConfigurationImpl(String idPanstarServerUrl) {
+    this.idPanstarServerUrl = idPanstarServerUrl;
+  }
 
-    @Override
-    public String getSamlRequestReceiverUrl() {
-        return idPanstarServerUrl;
-    }
+  @Override
+  public String getSamlRequestReceiverUrl() {
+    return idPanstarServerUrl;
+  }
 }

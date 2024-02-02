@@ -13,8 +13,8 @@ The `restrictedID` changes when a user gets a new ID card. Currently, there is n
 ### Requirements
 For the authentication process, Keycloak communicates with the [Governikus ID Panstar](https://www.governikus.de/en/loesungen/produkte/id-panstar/) server and the locally running [AusweisApp](https://github.com/Governikus/AusweisApp).
 It is necessary to have access to both, the respective Governikus ID Panstar Server URL and the keys and certificates that secure the communication with the server.
-To get you started as fast as possible, we deliver an out-of-the-box solution that uses publicly available keys and certificates.
-This must be understood as a Proof-of-Concept and is NOT production ready.
+To get you started as fast as possible, we deliver an out-of-the-box solution that uses publicly available keys and certificates provided by the Governikus ID Panstar SDK.
+This must be understood as a Proof-of-Concept and is NOT production ready. Feel free to reach out to us if you have any questions: fabian.kuenzer@l21s.de.
 
 ### Quickstart with Docker
 Use the following commands to set up Keycloak with the eID identity provider plugin in a Docker container.  

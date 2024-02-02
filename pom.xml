@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <keycloak.version>23.0.5</keycloak.version>
         <panstar-sdk.version>2.3.1</panstar-sdk.version>
+        <fmt-maven.version>2.22.1</fmt-maven.version>
     </properties>
 
     <distributionManagement>
@@ -129,6 +130,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.spotify.fmt</groupId>
+            <artifactId>fmt-maven-plugin</artifactId>
+            <version>${fmt-maven.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -172,6 +178,21 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>3.2.5</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.spotify.fmt</groupId>
+                        <artifactId>fmt-maven-plugin</artifactId>
+                        <version>${fmt-maven.version}</version>
+                        <configuration>
+                            <style>google</style>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

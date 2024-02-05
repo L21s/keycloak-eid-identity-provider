@@ -35,8 +35,7 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
     public void close() {
     }
 
-    //@Inject
-    //Template availability;
+    // TODO: make it work with quarkus qute
 
     @GET
     @Path("availability")

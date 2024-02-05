@@ -5,11 +5,17 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.services.resource.RealmResourceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
 
@@ -36,6 +42,7 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
     @Path("availability")
     @Produces(MediaType.TEXT_HTML)
     public Object eIdClientAvailability(@Context UriInfo uriInfo) {
+        logger.info("### called availability endpoint with tcTokenRedirectUrl {}", uriInfo.getQueryParameters().getFirst("TcTokenRedirectUri"));
         return String.format("<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -51,7 +58,7 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
                 "            const response = await fetch('http://127.0.0.1:24727/eID-Client?Status');\n" +
                 "\n" +
                 "            if (response.ok) {\n" +
-                "                window.location.href = '%s';\n" +
+                "                window.location.href = 'https://localhost:8443/realms/master/eid-client-availability-endpoint/available?TcTokenRedirectUri='+'%s';\n" +
                 "            } else {\n" +
                 "                renderStatus('Service is unavailable');\n" +
                 "            }\n" +
@@ -71,5 +78,22 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
                 "\n" +
                 "</body>\n" +
                 "</html>", uriInfo.getQueryParameters().getFirst("TcTokenRedirectUri"));
+    }
+
+    @GET
+    @Path("available")
+    @Produces(MediaType.TEXT_HTML)
+    public Response available(@Context UriInfo uriInfo) {
+        logger.info("Retrieve request on available endpoint");
+        String redirectUri = uriInfo.getRequestUri().getRawQuery().substring(19); // http://127.0.0.1:24727/eID-Client?tcTokenURL=https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=ofMussZ6zAC704pgABYSckoJP9HpM7EvHDdqJSwWtes.IHHOBaTkTg4.kXQvhMVMTjqBClqPX-ORFw&authSessionId=dc2edb3e-25d7-4427-a520-2885e3689a3f
+        String tcTokenUri = redirectUri.substring(45);
+        String urlEncodedRedirectUri = "http://127.0.0.1:24727/eID-Client?tcTokenURL=" + URLEncoder.encode(tcTokenUri, StandardCharsets.UTF_8);
+        logger.info("See other at {}", urlEncodedRedirectUri);
+
+        try {
+            return Response.seeOther(new URI(redirectUri)).build();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -38,7 +38,7 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
     // TODO: make it work with quarkus qute
 
     @GET
-    @Path("availability")
+    @Path("check")
     @Produces(MediaType.TEXT_HTML)
     public Object eIdClientAvailability(@Context UriInfo uriInfo) {
         logger.info("Received a request on availability endpoint. Browser checks eID client availability and calls available endpoint.");
@@ -60,7 +60,7 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
                             const response = await fetch('http://127.0.0.1:24727/eID-Client?Status');
 
                             if (response.ok) {
-                                window.location.href = 'https://localhost:8443/realms/master/eid-client-availability-endpoint/available?TcTokenRedirectUri='+'%s';
+                                window.location.href = 'https://localhost:8443/realms/master/eid-client-availability/available?TcTokenRedirectUri='+'%s';
                             } else {
                                 renderStatus('Service is unavailable');
                             }

@@ -72,7 +72,7 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
       logger.debug("TcTokenRedirectUri is {}", tcTokenRedirectUri);
       logger.info("Successfully generated TcTokenUri. Redirect to AusweisApp.");
 
-      String redirectUriString = String.format("https://localhost:8443/realms/master/eid-client-availability-endpoint/availability/?TcTokenRedirectUri=%s", tcTokenRedirectUri);
+      String redirectUriString = String.format("https://localhost:8443/realms/master/eid-client-availability/check/?TcTokenRedirectUri=%s", tcTokenRedirectUri);
 
       logger.info("Browser checks availability of AusweisApp with {}", redirectUriString);
 

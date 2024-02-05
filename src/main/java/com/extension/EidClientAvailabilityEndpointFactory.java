@@ -7,7 +7,7 @@ import org.keycloak.services.resource.RealmResourceProvider;
 import org.keycloak.services.resource.RealmResourceProviderFactory;
 
 public class EidClientAvailabilityEndpointFactory implements RealmResourceProviderFactory {
-    public static final String PROVIDER_ID = "eid-client-availability-endpoint";
+    public static final String PROVIDER_ID = "eid-client-availability";
 
     @Override
     public RealmResourceProvider create(KeycloakSession keycloakSession) {

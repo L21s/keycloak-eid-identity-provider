@@ -35,7 +35,7 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
     public void close() {
     }
 
-    // TODO: make it work with quarkus qute
+    // TODO make it work with quarkus qute
 
     @GET
     @Path("check")
@@ -86,6 +86,7 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
     @Path("available")
     @Produces(MediaType.TEXT_HTML)
     public Response available(@Context UriInfo uriInfo) {
+        // TODO don't use this endpoint and redirect in the html
         logger.info("Received a request on available endpoint. Try to redirect to tcTokenRedirectUrl.");
 
         String redirectUri = uriInfo.getRequestUri().getRawQuery().substring(19);

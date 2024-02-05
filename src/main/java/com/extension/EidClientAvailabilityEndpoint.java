@@ -62,10 +62,10 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
                             if (response.ok) {
                                 window.location.href = 'https://localhost:8443/realms/master/eid-client-availability/available?TcTokenRedirectUri='+'%s';
                             } else {
-                                renderStatus('Service is unavailable');
+                                renderStatus('AusweisApp is unavailable');
                             }
                         } catch (error) {
-                            renderStatus('Service is unavailable');
+                            renderStatus('AusweisApp is unavailable');
                         }
                     }
 

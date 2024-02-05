@@ -23,13 +23,12 @@ import org.slf4j.LoggerFactory;
 
 public class TcTokenEndpoint implements RealmResourceProvider {
 
+  private static final Logger logger = LoggerFactory.getLogger(TcTokenEndpoint.class);
   KeycloakSession session;
 
   TcTokenEndpoint(KeycloakSession session) {
     this.session = session;
   }
-
-  private static final Logger logger = LoggerFactory.getLogger(TcTokenEndpoint.class);
 
   @Override
   public Object getResource() {

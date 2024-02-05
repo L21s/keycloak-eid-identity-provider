@@ -19,14 +19,13 @@ import org.slf4j.LoggerFactory;
 
 public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityProviderModel> {
 
+  private static final Logger logger = LoggerFactory.getLogger(EidIdentityProvider.class);
   private final EidIdentityProviderModel config;
 
   public EidIdentityProvider(KeycloakSession session, EidIdentityProviderModel config) {
     super(session, config);
     this.config = config;
   }
-
-  private static final Logger logger = LoggerFactory.getLogger(EidIdentityProvider.class);
 
   @Override
   public Object callback(

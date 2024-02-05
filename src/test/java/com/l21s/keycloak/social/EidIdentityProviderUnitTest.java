@@ -13,7 +13,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.keycloak.broker.provider.AuthenticationRequest;
 import org.keycloak.broker.provider.IdentityProvider;
@@ -56,7 +56,7 @@ public class EidIdentityProviderUnitTest {
       when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
       when(httpHeaders.getRequestHeader("User-Agent"))
           .thenReturn(
-              Arrays.asList(
+              List.of(
                   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"));
 
       // when the authentication is started
@@ -106,7 +106,7 @@ public class EidIdentityProviderUnitTest {
       when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
       when(httpHeaders.getRequestHeader("User-Agent"))
           .thenReturn(
-              Arrays.asList(
+              List.of(
                   "Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/114.0.5735.99 Mobile/15E148 Safari/604.1"));
 
       // when the authentication is started

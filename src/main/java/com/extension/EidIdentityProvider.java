@@ -55,7 +55,7 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
             .build()
             .toString();
 
-    logger.debug("TcTokenUrl is {}", tcTokenUrl);
+    logger.info("TcTokenUrl is {}", tcTokenUrl);
 
     try {
       String userAgentHeader = request.getHttpRequest().getHttpHeaders().getRequestHeader("User-Agent").toString();
@@ -69,7 +69,7 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
         tcTokenRedirectUri = TcTokenUtils.getStationaryEidClientUrl(tcTokenUrl);
       }
 
-      logger.debug("TcTokenRedirectUri is {}", tcTokenRedirectUri);
+      logger.info("TcTokenRedirectUri is {}", tcTokenRedirectUri);
       logger.info("Successfully generated TcTokenUri. Redirect to AusweisApp.");
 
       String redirectUriString = String.format("https://localhost:8443/realms/master/eid-client-availability/check/?TcTokenRedirectUri=%s", tcTokenRedirectUri);

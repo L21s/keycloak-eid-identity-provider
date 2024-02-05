@@ -54,8 +54,11 @@ If the eID identity provider plugin was registered successfully, `TcTokenEndpoin
 
 ## Development
 ### Code style
-The [Google Java Style](https://google.github.io/styleguide/javaguide.html) is used for this project.
-Run `mvn com.spotify.fmt:fmt-maven-plugin:format` to format your code accordingly. If the code is not formatted correctly, the build will fail. 
+The [Google Java Style](https://google.github.io/styleguide/javaguide.html) is used for this project. There are two ways to format your code accordingly:
+1. Download the respective XML file from the [Google Style Guide](https://github.com/google/styleguide) repository to format the code with your IDE.
+2. Run `mvn com.spotify.fmt:fmt-maven-plugin:format` from the terminal in the repository's directory.  
+
+If the code is not formatted correctly, the build will fail.
 
 ### Authentication flow
 ```mermaid

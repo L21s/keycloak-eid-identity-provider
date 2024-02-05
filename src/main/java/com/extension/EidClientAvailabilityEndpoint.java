@@ -42,42 +42,9 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
     @Path("availability")
     @Produces(MediaType.TEXT_HTML)
     public Object eIdClientAvailability(@Context UriInfo uriInfo) {
-        logger.info("### called availability endpoint with tcTokenRedirectUrl {}", uriInfo.getQueryParameters().getFirst("TcTokenRedirectUri"));
-        return String.format("<!DOCTYPE html>\n" +
-                "<html lang=\"en\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <title>Service Availability Check</title>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "\n" +
-                "<script>\n" +
-                "    async function checkServiceAvailability() {\n" +
-                "        try {\n" +
-                "            const response = await fetch('http://127.0.0.1:24727/eID-Client?Status');\n" +
-                "\n" +
-                "            if (response.ok) {\n" +
-                "                window.location.href = 'https://localhost:8443/realms/master/eid-client-availability-endpoint/available?TcTokenRedirectUri='+'%s';\n" +
-                "            } else {\n" +
-                "                renderStatus('Service is unavailable');\n" +
-                "            }\n" +
-                "        } catch (error) {\n" +
-                "            renderStatus('Service is unavailable');\n" +
-                "        }\n" +
-                "    }\n" +
-                "\n" +
-                "    function renderStatus(status) {\n" +
-                "        const statusElement = document.createElement('p');\n" +
-                "        statusElement.textContent = status;\n" +
-                "        document.body.appendChild(statusElement);\n" +
-                "    }\n" +
-                "\n" +
-                "    checkServiceAvailability();\n" +
-                "</script>\n" +
-                "\n" +
-                "</body>\n" +
-                "</html>", uriInfo.getQueryParameters().getFirst("TcTokenRedirectUri"));
+        logger.info("Received a request on availability endpoint. Browser checks eID client availability and calls available endpoint.");
+        logger.info("TcTokenRedirectUri is {}", uriInfo.getQueryParameters().getFirst("TcTokenRedirectUri"));
+
         return String.format("""
                 <!DOCTYPE html>
                 <html lang="en">
@@ -120,11 +87,13 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
     @Path("available")
     @Produces(MediaType.TEXT_HTML)
     public Response available(@Context UriInfo uriInfo) {
-        logger.info("Retrieve request on available endpoint");
+        logger.info("Received a request on available endpoint. Try to redirect to tcTokenRedirectUrl.");
+
         String redirectUri = uriInfo.getRequestUri().getRawQuery().substring(19);
         String tcTokenUri = redirectUri.substring(45);
         String urlEncodedRedirectUri = "http://127.0.0.1:24727/eID-Client?tcTokenURL=" + URLEncoder.encode(tcTokenUri, StandardCharsets.UTF_8);
-        logger.info("See other at {}", urlEncodedRedirectUri);
+
+        logger.info("TcTokenRedirectUrl is {}", urlEncodedRedirectUri);
 
         try {
             return Response.seeOther(new URI(urlEncodedRedirectUri)).build();

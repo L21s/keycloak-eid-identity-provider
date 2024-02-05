@@ -85,13 +85,13 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
     @Produces(MediaType.TEXT_HTML)
     public Response available(@Context UriInfo uriInfo) {
         logger.info("Retrieve request on available endpoint");
-        String redirectUri = uriInfo.getRequestUri().getRawQuery().substring(19); // http://127.0.0.1:24727/eID-Client?tcTokenURL=https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=ofMussZ6zAC704pgABYSckoJP9HpM7EvHDdqJSwWtes.IHHOBaTkTg4.kXQvhMVMTjqBClqPX-ORFw&authSessionId=dc2edb3e-25d7-4427-a520-2885e3689a3f
+        String redirectUri = uriInfo.getRequestUri().getRawQuery().substring(19);
         String tcTokenUri = redirectUri.substring(45);
         String urlEncodedRedirectUri = "http://127.0.0.1:24727/eID-Client?tcTokenURL=" + URLEncoder.encode(tcTokenUri, StandardCharsets.UTF_8);
         logger.info("See other at {}", urlEncodedRedirectUri);
 
         try {
-            return Response.seeOther(new URI(redirectUri)).build();
+            return Response.seeOther(new URI(urlEncodedRedirectUri)).build();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

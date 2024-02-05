@@ -78,6 +78,42 @@ public class EidClientAvailabilityEndpoint implements RealmResourceProvider {
                 "\n" +
                 "</body>\n" +
                 "</html>", uriInfo.getQueryParameters().getFirst("TcTokenRedirectUri"));
+        return String.format("""
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Service Availability Check</title>
+                </head>
+                <body>
+
+                <script>
+                    async function checkServiceAvailability() {
+                        try {
+                            const response = await fetch('http://127.0.0.1:24727/eID-Client?Status');
+
+                            if (response.ok) {
+                                window.location.href = 'https://localhost:8443/realms/master/eid-client-availability-endpoint/available?TcTokenRedirectUri='+'%s';
+                            } else {
+                                renderStatus('Service is unavailable');
+                            }
+                        } catch (error) {
+                            renderStatus('Service is unavailable');
+                        }
+                    }
+
+                    function renderStatus(status) {
+                        const statusElement = document.createElement('p');
+                        statusElement.textContent = status;
+                        document.body.appendChild(statusElement);
+                    }
+
+                    checkServiceAvailability();
+                </script>
+
+                </body>
+                </html>""", uriInfo.getQueryParameters().getFirst("TcTokenRedirectUri"));
     }
 
     @GET

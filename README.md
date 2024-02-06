@@ -39,7 +39,8 @@ The final configuration looks like this.
 ![screencapture-localhost-8443-admin-master-console-2024-01-29-11_07_58](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/4a24f3e9-9dc7-4238-89a0-4db38819a166)
 
 #### AusweisApp
-For using the Proof-of-Concept, the AusweisApp must be configured to simulate an ID card. Therefore, the developer mode must be activated as described [here](https://www.ausweisapp.bund.de/ausweisapp2/help/1.20/en/Windows/settings-developer.html#aktivieren-des-entwicklermodus).
+For using the Proof-of-Concept, the AusweisApp must be running on the same machine as Keycloak. In addition, it must be configured to mock an ID card.
+Therefore, the developer mode must be activated as described [here](https://www.ausweisapp.bund.de/ausweisapp2/help/1.20/en/Windows/settings-developer.html#aktivieren-des-entwicklermodus).
 Afterward, go to Settings -> Developer options and activate the internal card simulator.
 Now, everything is set to go to `https://localhost:8443`, log out of the admin console, and click `eid` to start the authentication process.  
 

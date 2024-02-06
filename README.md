@@ -11,7 +11,7 @@ The `restrictedID` changes when a user gets a new ID card. Currently, there is n
 
 ## Installation guide
 ### Requirements
-For the authentication process, Keycloak communicates with the [Governikus ID Panstar](https://www.governikus.de/en/loesungen/produkte/id-panstar/) server and the locally running [AusweisApp](https://github.com/Governikus/AusweisApp).
+For the authentication process, Keycloak communicates with the [Governikus ID Panstar](https://www.governikus.de/en/loesungen/produkte/id-panstar/) server and the locally running [AusweisApp](https://www.ausweisapp.bund.de/download).
 It is necessary to have access to both, the respective Governikus ID Panstar Server URL and the keys and certificates that secure the communication with the server.
 To get you started as fast as possible, we deliver an out-of-the-box solution that uses publicly available keys and certificates provided by the Governikus ID Panstar SDK.
 This must be understood as a Proof-of-Concept and is NOT production ready. Feel free to reach out to us if you have any questions: jan.schmitz-hermes@l21s.de.
@@ -26,16 +26,20 @@ Use the following commands to set up Keycloak with the eID identity provider plu
 
 ### Configuration
 #### Keycloak
-Go to `https://localhost:8443` and log in to the Keycloak Admin UI with `admin` as Username and Password, go to identity providers, and select eID.
-For a fully functional eID identity provider, Client Id and Client Secret are not necessary but the current Keycloak implementation requires dummy values. More information are provided [here](https://github.com/keycloak/keycloak/issues/21891).
-ID Panstar Server URL `https://dev.id.governikus-eid.de/gov_autent/async` and SAML Request Entity Base URL `https://localhost:8443` must be configured.
-In addition, the required keys and certificates are stored at `src/main/resources/keys`.
-They are named after their respective configuration purposes and the order in which they must be selected.  
+Follow these steps to configure the eID identity provider for using the Proof-of-Concept. 
+1. Go to `https://localhost:8443` and log in to the Keycloak Admin UI with `admin` as Username and Password.
+2. Go to identity providers and select eID.
+3. Set dummy values for Client Id and Client Secret. They are not necessary for a functioning eID identity provider but are required by the current [Keycloak implementation](https://github.com/keycloak/keycloak/issues/21891).  
+4. Set the ID Panstar Server URL to `https://dev.id.governikus-eid.de/gov_autent/async`. 
+5. Set the SAML Request Entity Base URL to `https://localhost:8443`.
+6. Set the keys and certificates stored at `src/main/resources/keys` in the order specified by their names.   
+
+The final configuration looks like this.
 
 ![screencapture-localhost-8443-admin-master-console-2024-01-29-11_07_58](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/4a24f3e9-9dc7-4238-89a0-4db38819a166)
 
 #### AusweisApp
-For a quick start, the AusweisApp must be configured to simulate an ID card. Therefore, the developer mode must be activated as described [here](https://www.ausweisapp.bund.de/ausweisapp2/help/1.20/en/Windows/settings-developer.html#aktivieren-des-entwicklermodus).
+For using the Proof-of-Concept, the AusweisApp must be configured to simulate an ID card. Therefore, the developer mode must be activated as described [here](https://www.ausweisapp.bund.de/ausweisapp2/help/1.20/en/Windows/settings-developer.html#aktivieren-des-entwicklermodus).
 Afterward, go to Settings -> Developer options and activate the internal card simulator.
 Now, everything is set to go to `https://localhost:8443`, log out of the admin console, and click `eid` to start the authentication process.  
 
@@ -81,3 +85,5 @@ sequenceDiagram
     Keycloak->>Keycloak: Parse SAML response and authenticate or create user
     Keycloak->>Browser: Retrieve JSON Web Token
 ```
+
+More technical details can be found [here](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03130/tr-03130.html).

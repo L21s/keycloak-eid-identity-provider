@@ -17,6 +17,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Publish package
-        run: mvn deploy -P dev
+        run: mvn deploy -P dev -X
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}

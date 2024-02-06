@@ -1,12 +1,14 @@
-package com.extension;
+package com.l21s.keycloak.social;
 
-import com.extension.configuration.EidIdentityProviderModel;
-import com.extension.configuration.EidSamlResponseHandler;
-import com.extension.configuration.SamlResponseHandlerFactoryImpl;
+import com.l21s.keycloak.social.configuration.EidIdentityProviderModel;
+import com.l21s.keycloak.social.configuration.EidSamlResponseHandler;
+import com.l21s.keycloak.social.configuration.SamlResponseHandlerFactoryImpl;
 import de.governikus.panstar.sdk.utils.TcTokenUtils;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
+import java.net.URI;
+import java.util.stream.Stream;
 import org.keycloak.broker.provider.*;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.models.FederatedIdentityModel;
@@ -15,11 +17,9 @@ import org.keycloak.models.RealmModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.util.stream.Stream;
-
 public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityProviderModel> {
 
+  private static final Logger logger = LoggerFactory.getLogger(EidIdentityProvider.class);
   private final EidIdentityProviderModel config;
 
   public EidIdentityProvider(KeycloakSession session, EidIdentityProviderModel config) {
@@ -27,11 +27,11 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
     this.config = config;
   }
 
-  private static final Logger logger = LoggerFactory.getLogger(EidIdentityProvider.class);
-
   @Override
-  public Object callback(RealmModel realm, IdentityProvider.AuthenticationCallback callback, EventBuilder event) {
-    return new EidSamlResponseHandler(realm, session, callback, event, this, config, new SamlResponseHandlerFactoryImpl());
+  public Object callback(
+      RealmModel realm, IdentityProvider.AuthenticationCallback callback, EventBuilder event) {
+    return new EidSamlResponseHandler(
+        realm, session, callback, event, this, config, new SamlResponseHandlerFactoryImpl());
   }
 
   @Override
@@ -58,8 +58,10 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
     logger.info("TcTokenUrl is {}", tcTokenUrl);
 
     try {
-      String userAgentHeader = request.getHttpRequest().getHttpHeaders().getRequestHeader("User-Agent").toString();
-      boolean isMobileClient = Stream.of("iPhone", "Android", "Windows Phone").anyMatch(userAgentHeader::contains);
+      String userAgentHeader =
+          request.getHttpRequest().getHttpHeaders().getRequestHeader("User-Agent").toString();
+      boolean isMobileClient =
+          Stream.of("iPhone", "Android", "Windows Phone").anyMatch(userAgentHeader::contains);
 
       URI tcTokenRedirectUri = null;
       if (isMobileClient) {
@@ -79,7 +81,8 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
   }
 
   @Override
-  public Response retrieveToken(KeycloakSession keycloakSession, FederatedIdentityModel federatedIdentityModel) {
+  public Response retrieveToken(
+      KeycloakSession keycloakSession, FederatedIdentityModel federatedIdentityModel) {
     return Response.ok(federatedIdentityModel.getToken()).type(MediaType.APPLICATION_JSON).build();
   }
 

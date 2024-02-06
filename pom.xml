@@ -4,17 +4,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.extension</groupId>
-    <artifactId>keycloak-extensions</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.github.l21s</groupId>
+    <artifactId>keycloak-eid-identity-provider</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <keycloak.version>23.0.1</keycloak.version>
+        <keycloak.version>23.0.5</keycloak.version>
         <panstar-sdk.version>2.3.1</panstar-sdk.version>
+        <fmt-maven.version>2.22.1</fmt-maven.version>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub L21s Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/L21s/keycloak-eid-identity-provider</url>
+        </repository>
+    </distributionManagement>
 
     <repositories>
         <repository>
@@ -121,6 +130,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.spotify.fmt</groupId>
+            <artifactId>fmt-maven-plugin</artifactId>
+            <version>${fmt-maven.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -164,6 +178,21 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>3.2.5</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.spotify.fmt</groupId>
+                        <artifactId>fmt-maven-plugin</artifactId>
+                        <version>${fmt-maven.version}</version>
+                        <configuration>
+                            <style>google</style>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

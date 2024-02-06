@@ -80,7 +80,7 @@ public class TcTokenEndpoint implements RealmResourceProvider {
       URI redirectUri = new URI(completeUrlWithRequest);
 
       logger.info(
-          "Successfully generated SAML request. eID client will be redirected to ID PANSTAR with URI {}.",
+          "Successfully generated SAML request. eID client will be redirected to ID PANSTAR with URI {}",
           redirectUri);
 
       return Response.seeOther(redirectUri).build();

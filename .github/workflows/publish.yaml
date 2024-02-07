@@ -24,6 +24,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       - name: Publish package
-        run: mvn deploy -P dev -X
+        run: mvn --batch-mode deploy -P dev -X
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}

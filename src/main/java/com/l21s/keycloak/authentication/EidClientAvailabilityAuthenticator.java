@@ -1,11 +1,13 @@
 package com.l21s.keycloak.authentication;
 
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.models.utils.FormMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +27,9 @@ public class EidClientAvailabilityAuthenticator implements Authenticator {
     Response challenge =
         authenticationFlowContext
             .form()
-            .setError("eID client is not available.")
-            .createForm("auth-eid-availability.ftl");
+            .addError(new FormMessage("eID client is not available."))
+            .createErrorPage(Status.SERVICE_UNAVAILABLE);
+
     authenticationFlowContext.challenge(challenge);
   }
 

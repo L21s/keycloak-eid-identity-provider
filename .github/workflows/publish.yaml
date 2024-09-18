@@ -16,14 +16,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Maven Install
-        run: |
-          mvn install -P dev
-          cd /home/runner/.m2/repository/com/github/l21s/keycloak-eid-identity-provider/0.1.0
-          ls
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       - name: Publish package
-        run: mvn --batch-mode deploy -P dev -X
+        run: mvn --batch-mode deploy -P fat-jar -X
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}

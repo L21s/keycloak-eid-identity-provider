@@ -1,9 +1,9 @@
 package de.l21s.keycloak.eid;
 
+import de.governikus.panstar.sdk.utils.TcTokenUtils;
 import de.l21s.keycloak.eid.configuration.EidIdentityProviderModel;
 import de.l21s.keycloak.eid.configuration.EidSamlResponseHandler;
 import de.l21s.keycloak.eid.configuration.SamlResponseHandlerFactoryImpl;
-import de.governikus.panstar.sdk.utils.TcTokenUtils;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;

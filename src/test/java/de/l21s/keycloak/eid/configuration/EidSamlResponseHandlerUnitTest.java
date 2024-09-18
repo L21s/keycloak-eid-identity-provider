@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentCaptor.captor;
 import static org.mockito.Mockito.*;
 
-import de.l21s.keycloak.eid.EidIdentityProvider;
 import de.governikus.panstar.sdk.saml.response.SamlResponseHandlerWithoutTimeAssertion;
+import de.l21s.keycloak.eid.EidIdentityProvider;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.UriInfo;
 import java.io.File;

@@ -1,11 +1,11 @@
 package de.l21s.keycloak.eid;
 
-import de.l21s.keycloak.eid.configuration.SamlConfigurationImpl;
 import de.governikus.panstar.sdk.saml.exception.SamlRequestException;
 import de.governikus.panstar.sdk.saml.request.SamlRequestGenerator;
 import de.governikus.panstar.sdk.utils.RequestData;
 import de.governikus.panstar.sdk.utils.constant.LevelOfAssuranceType;
 import de.governikus.panstar.sdk.utils.exception.InvalidInputException;
+import de.l21s.keycloak.eid.configuration.SamlConfigurationImpl;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;

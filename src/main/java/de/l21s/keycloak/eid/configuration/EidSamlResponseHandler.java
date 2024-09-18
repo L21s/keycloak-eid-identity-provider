@@ -2,12 +2,12 @@ package de.l21s.keycloak.eid.configuration;
 
 import static org.keycloak.broker.provider.IdentityProvider.AuthenticationCallback;
 
-import de.l21s.keycloak.eid.EidIdentityProvider;
 import de.bund.bsi.eid240.PersonalDataType;
 import de.governikus.panstar.sdk.saml.exception.SamlAuthenticationException;
 import de.governikus.panstar.sdk.saml.exception.UnsuccessfulSamlAuthenticationProcessException;
 import de.governikus.panstar.sdk.saml.response.ProcessedSamlResult;
 import de.governikus.panstar.sdk.utils.exception.InvalidInputException;
+import de.l21s.keycloak.eid.EidIdentityProvider;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
@@ -69,10 +69,10 @@ public class EidSamlResponseHandler {
       logger.info("Successfully parsed SAML response. Try to set up an identity.");
 
       BrokeredIdentityContext identity =
-          new BrokeredIdentityContext(getRestrictedIdString(samlResponse.getPersonalData()), eidIdentityProviderConfig);
+          new BrokeredIdentityContext(
+              getRestrictedIdString(samlResponse.getPersonalData()), eidIdentityProviderConfig);
       AuthenticationSessionModel authSession = getAuthSession(uriInfo, samlResponse);
-      setUpIdentity(
-          identity, eidIdentityProvider, authSession, samlResponse);
+      setUpIdentity(identity, eidIdentityProvider, authSession, samlResponse);
 
       logger.info("Successfully set up identity. Initiate authentication callback.");
 

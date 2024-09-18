@@ -1,4 +1,4 @@
-package com.l21s.keycloak.social.configuration;
+package de.l21s.keycloak.eid.configuration;
 
 import de.governikus.panstar.sdk.saml.configuration.SamlConfiguration;
 import de.governikus.panstar.sdk.saml.configuration.SamlEidServerConfiguration;

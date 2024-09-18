@@ -1,11 +1,11 @@
-package com.l21s.keycloak.social;
+package de.l21s.keycloak.eid;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.l21s.keycloak.social.configuration.EidIdentityProviderModel;
-import com.l21s.keycloak.social.configuration.EidSamlResponseHandler;
+import de.l21s.keycloak.eid.configuration.EidIdentityProviderModel;
+import de.l21s.keycloak.eid.configuration.EidSamlResponseHandler;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;

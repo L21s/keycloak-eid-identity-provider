@@ -1,1 +1,1 @@
-com.l21s.keycloak.social.TcTokenEndpointFactory
+de.l21s.keycloak.eid.TcTokenEndpointFactory

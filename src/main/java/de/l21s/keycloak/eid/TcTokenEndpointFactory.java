@@ -1,4 +1,4 @@
-package com.l21s.keycloak.social;
+package de.l21s.keycloak.eid;
 
 import org.keycloak.Config;
 import org.keycloak.models.KeycloakSession;

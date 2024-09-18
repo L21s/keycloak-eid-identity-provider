@@ -1,4 +1,4 @@
-package com.l21s.keycloak.social;
+package de.l21s.keycloak.eid;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

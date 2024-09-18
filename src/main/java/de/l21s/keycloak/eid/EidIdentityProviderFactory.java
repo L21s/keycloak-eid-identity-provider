@@ -1,6 +1,6 @@
-package com.l21s.keycloak.social;
+package de.l21s.keycloak.eid;
 
-import com.l21s.keycloak.social.configuration.EidIdentityProviderModel;
+import de.l21s.keycloak.eid.configuration.EidIdentityProviderModel;
 import java.util.List;
 import org.keycloak.Config;
 import org.keycloak.broker.provider.AbstractIdentityProviderFactory;

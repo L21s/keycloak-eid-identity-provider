@@ -1,4 +1,4 @@
-package com.l21s.keycloak.social.configuration;
+package de.l21s.keycloak.eid.configuration;
 
 import static java.nio.file.Files.readAllBytes;
 import static org.junit.jupiter.api.Assertions.*;

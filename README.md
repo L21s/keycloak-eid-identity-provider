@@ -58,15 +58,7 @@ If the eID identity provider plugin was registered successfully, `TcTokenEndpoin
 
 <img width="1730" alt="Bildschirmfoto 2024-01-29 um 12 06 30" src="https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/1844fcfd-b863-4db6-944c-a383e56a3906">
 
-## Development
-### Code style
-The [Google Java Style](https://google.github.io/styleguide/javaguide.html) is used for this project. There are two ways to format your code accordingly:
-1. Download the respective XML file from the [Google Style Guide](https://github.com/google/styleguide) repository and follow [these](https://github.com/google/google-java-format?tab=readme-ov-file#using-the-formatter) instructions to format the code with your IDE.
-2. Run `mvn com.spotify.fmt:fmt-maven-plugin:format` from the terminal in the repository's directory.  
-
-If the code is not formatted correctly, the build will fail.
-
-### Authentication flow
+## Detailed explanation of authentication flow
 ```mermaid
 sequenceDiagram
     participant Browser
@@ -87,5 +79,13 @@ sequenceDiagram
     Keycloak->>Keycloak: Parse SAML response and authenticate or create user
     Keycloak->>Browser: Retrieve JSON Web Token
 ```
-
 More technical details can be found [here](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03130/tr-03130.html).
+
+## Contributing
+### Code style
+The [Google Java Style](https://google.github.io/styleguide/javaguide.html) is used for this project. There are two ways to format your code accordingly:
+1. Download the respective XML file from the [Google Style Guide](https://github.com/google/styleguide) repository and follow [these](https://github.com/google/google-java-format?tab=readme-ov-file#using-the-formatter) instructions to format the code with your IDE.
+2. Run `mvn com.spotify.fmt:fmt-maven-plugin:format` from the terminal in the repository's directory.  
+
+If the code is not formatted correctly, the build will fail.
+

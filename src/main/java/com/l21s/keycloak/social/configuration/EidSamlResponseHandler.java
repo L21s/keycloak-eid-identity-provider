@@ -69,10 +69,10 @@ public class EidSamlResponseHandler {
       logger.info("Successfully parsed SAML response. Try to set up an identity.");
 
       BrokeredIdentityContext identity =
-          new BrokeredIdentityContext(getRestrictedIdString(samlResponse.getPersonalData()));
+          new BrokeredIdentityContext(getRestrictedIdString(samlResponse.getPersonalData()), eidIdentityProviderConfig);
       AuthenticationSessionModel authSession = getAuthSession(uriInfo, samlResponse);
       setUpIdentity(
-          identity, eidIdentityProvider, eidIdentityProviderConfig, authSession, samlResponse);
+          identity, eidIdentityProvider, authSession, samlResponse);
 
       logger.info("Successfully set up identity. Initiate authentication callback.");
 
@@ -113,11 +113,9 @@ public class EidSamlResponseHandler {
   private void setUpIdentity(
       BrokeredIdentityContext identity,
       EidIdentityProvider eidIdentityProvider,
-      EidIdentityProviderModel eidIdentityProviderConfig,
       AuthenticationSessionModel authSession,
       ProcessedSamlResult samlResponse) {
     identity.setIdp(eidIdentityProvider);
-    identity.setIdpConfig(eidIdentityProviderConfig);
     identity.setAuthenticationSession(authSession);
     String givenName = samlResponse.getPersonalData().getGivenNames().toLowerCase();
     String familyName = samlResponse.getPersonalData().getFamilyNames().toLowerCase();

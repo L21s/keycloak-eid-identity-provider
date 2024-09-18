@@ -43,7 +43,7 @@ For using the Proof-of-Concept, the AusweisApp must be running on the same machi
 Therefore, the developer mode must be activated as described [here](https://www.ausweisapp.bund.de/ausweisapp2/help/1.20/en/Windows/settings-developer.html#aktivieren-des-entwicklermodus).
 Afterward, go to Settings -> Developer options and activate the internal card simulator.
 Now, everything is set to go to `https://localhost:8443`, log out of the admin console, and click `eid` to start the authentication process. 
-As a result, you are logged in with the test user *erika mustermann*. 
+As a result, you are logged in with the test user *erika mustermann*. Please note: You probaly won't see anything here in the first place, because Erika Mustermann is no Keycloak Admin and you are trying to log in to the admin console. You can use any frontend of your choice to test it or make erika_mustermann an Keycloak Admin (login via the `admin` user).
 
 ### Setup without Docker
 Follow these steps to run Keycloak including the eID identity provider without Docker:

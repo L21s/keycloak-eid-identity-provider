@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.6
+    image: quay.io/keycloak/keycloak:25.0.0
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -10,7 +10,7 @@ services:
       KC_LOG_LEVEL: INFO
     command: ["start-dev"]
     volumes:
-      - ./target/deploy:/opt/keycloak/providers/
+      - ./target/keycloak-eid-identity-provider.jar:/opt/keycloak/providers/keycloak-eid-identity-provider.jar
       - ./src/main/resources/keys/tls-ssl-commcert.p12:/opt/keycloak/conf/tls-ssl-commcert.p12
     ports:
       - "8443:8443"

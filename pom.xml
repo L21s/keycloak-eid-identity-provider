@@ -11,10 +11,40 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <keycloak.version>23.0.5</keycloak.version>
-        <panstar-sdk.version>2.3.1</panstar-sdk.version>
+
+        <lombok.version>1.18.30</lombok.version>
+
+        <keycloak.version>25.0.0</keycloak.version>
+
+        <panstar-sdk.version>4.0.2</panstar-sdk.version>
         <fmt-maven.version>2.22.1</fmt-maven.version>
+        <identification-report.version>1.0.1</identification-report.version>
+        <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
+
+        <!-- test dependencies -->
+        <junit-jupiter.version>5.9.1</junit-jupiter.version>
+        <mockito.version>5.11.0</mockito.version>
+        <testcontainers.version>1.19.7</testcontainers.version>
+        <testcontainers-keycloak.version>3.3.0</testcontainers-keycloak.version>
+
+        <!-- version conflicts (these are the versions used by the current keycloak version) -->
+        <jackson.version>2.15.2</jackson.version>
+        <bytebuddy.version>1.14.7</bytebuddy.version>
+        <commons-codec.version>1.16.0</commons-codec.version>
+        <guava.version>32.0.0-jre</guava.version>
+        <xmlsec.version>2.2.6</xmlsec.version>
+        <bouncycastle.version>1.74</bouncycastle.version>
+        <jakarta-xml-bind-api.version>4.0.0</jakarta-xml-bind-api.version>
+        <jakarta-xml-soap-api.version>3.0.0</jakarta-xml-soap-api.version>
+        <jakarta-activation-api.version>2.1.2</jakarta-activation-api.version>
+        <slf4j-api.version>2.0.6</slf4j-api.version>
+
+        <!--plugins -->
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-shade-plugin.version>3.5.2</maven-shade-plugin.version>
     </properties>
 
     <distributionManagement>
@@ -27,115 +57,252 @@
 
     <repositories>
         <repository>
-            <id>governikus</id>
-            <name>Governikus Nexus</name>
-            <url>https://nexus-ext.governikus.de/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>shibboleth</id>
-            <name>Shibboleth</name>
-            <url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
-        </repository>
-        <repository>
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- base setup dependencies -->
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-parent</artifactId>
+                <version>${keycloak.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>de.governikus.panstar.sdk</groupId>
+                <artifactId>panstar-saml-sdk</artifactId>
+                <version>${panstar-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus-jose-jwt.version}</version>
+            </dependency>
+
+            <!-- transitive provided -->
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-core</artifactId>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <!-- version conflict resolved -->
+                <version>${bytebuddy.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <!-- version conflict resolved -->
+                <version>${jackson.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <!-- version conflict resolved -->
+                <version>${jackson.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <!-- version conflict resolved -->
+                <version>${jackson.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <!-- version conflict resolved -->
+                <version>${commons-codec.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <!-- version conflict resolved -->
+                <version>${guava.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <!-- version conflict resolved -->
+                <version>${bouncycastle.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <!-- version conflict resolved -->
+                <version>${bouncycastle.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcutil-jdk18on</artifactId>
+                <!-- version conflict resolved -->
+                <version>${bouncycastle.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.santuario</groupId>
+                <artifactId>xmlsec</artifactId>
+                <!-- version conflict resolved -->
+                <version>${xmlsec.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <!-- version conflict resolved -->
+                <version>${jakarta-xml-bind-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <!-- version conflict resolved -->
+                <version>${jakarta-activation-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.soap</groupId>
+                <artifactId>jakarta.xml.soap-api</artifactId>
+                <!-- version conflict resolved -->
+                <version>${jakarta-xml-soap-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <!-- version conflict resolved -->
+                <version>${slf4j-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- test dependencies -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.dasniko</groupId>
+                <artifactId>testcontainers-keycloak</artifactId>
+                <version>${testcontainers-keycloak.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.quarkus</groupId>
+                        <artifactId>quarkus-junit4-mock</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+        <!-- keycloak dependencies -->
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-server-spi</artifactId>
-            <version>${keycloak.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-server-spi-private</artifactId>
-            <version>${keycloak.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-core</artifactId>
-            <version>${keycloak.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.governikus.panstar.sdk</groupId>
-            <artifactId>panstar-saml-sdk</artifactId>
-            <version>${panstar-sdk.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.governikus</groupId>
-            <artifactId>identification-report-impl-java</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-            <version>9.37.2</version>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-services</artifactId>
-            <version>${keycloak.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-saml-core</artifactId>
-            <version>${keycloak.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- end keycloak dependencies -->
+
         <dependency>
-            <groupId>jakarta.ws.rs</groupId>
-            <artifactId>jakarta.ws.rs-api</artifactId>
-            <version>3.1.0</version>
-            <scope>provided</scope>
+            <groupId>de.governikus.panstar.sdk</groupId>
+            <artifactId>panstar-saml-sdk</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+
+        <!-- test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.1</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.8.0</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.18.3</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.dasniko</groupId>
             <artifactId>testcontainers-keycloak</artifactId>
-            <version>3.2.0</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.quarkus</groupId>
-                    <artifactId>quarkus-junit4-mock</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.spotify.fmt</groupId>
-            <artifactId>fmt-maven-plugin</artifactId>
-            <version>${fmt-maven.version}</version>
         </dependency>
     </dependencies>
+
 
     <profiles>
         <profile>
@@ -149,7 +316,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.0.2</version>
+                        <version>${maven-jar-plugin.version}</version>
                         <configuration>
                             <outputDirectory>${project.build.directory}/deploy</outputDirectory>
                         </configuration>
@@ -177,7 +344,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.2.5</version>
+                        <version>${maven-surefire-plugin.version}</version>
                     </plugin>
                     <plugin>
                         <groupId>com.spotify.fmt</groupId>
@@ -191,6 +358,39 @@
                                 <goals>
                                     <goal>check</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>fat-jar</id>
+
+            <build>
+                <finalName>${project.artifactId}</finalName>
+
+                <plugins>
+                    <!-- this plugin builds a fat-jar with the META-INF/services entries of all transitive
+                         dependencies merged together. This is required for opensaml in order to have all
+                         necessary initializers executed when the panstar-sdk initializes OpenSAML -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                                    <transformers>
+                                        <transformer
+                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                    </transformers>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

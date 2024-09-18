@@ -3,13 +3,15 @@
 
 ![demo](https://github.com/L21s/keycloak-eid-identity-provider/assets/85928453/6e00db3a-99c3-4fe7-8475-77ec7c90ec34)  
 
-This plugin enables registering and authenticating users via the German ID card in Keycloak. The actual checking of the ID card is not done in Keycloak, but in a so-called eID server. If you follow the guide below, we connect to the Governikus test server that is publicly available. If you would use this plugin in production, you would need your own eID-server.
+This plugin enables registering and authenticating users via the German ID card in Keycloak. The actual checking of the ID card is not done in Keycloak, but in a so-called eID server. If you follow the guide below, we connect to the Governikus test server that is publicly available. If you would use this plugin in production, you would need your own eID-server.  
+
+You can also see a demo of how it works and why it's important in one of our [case studies](https://l21s.de/case-studies/keycloak-elektronischer-personalausweis-eid). 
 
 ## Known limitations
 Users are authenticated with the `restrictedID` which is assigned to exactly one ID card. 
 The `restrictedID` changes when a user gets a new ID card. Currently, there is no solution implemented to update a user account in this case.  
 
-:warning: This plugin is not considered production ready, but should rather show that eID authentication with Keycloak is possible. If you want to use this in production, feel free to reach out to the @schmitzhermes via e-mail.
+:warning: This plugin is not considered production ready, but should rather show that eID authentication with Keycloak is possible. If you want to use this in production, feel free to reach out to [@schmitzhermes](https://github.com/schmitzhermes) directly or book a meeting on our [L21s website](https://l21s.de/).
 
 ## Installation guide
 

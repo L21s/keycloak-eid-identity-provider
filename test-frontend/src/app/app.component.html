@@ -1,0 +1,23 @@
+<div *ngIf="idToken" style="background-color: '#5237FC';">
+  <div class="container">
+    <div class="item">
+
+      <div>
+        <h1>This worked like a charm!</h1>
+      </div>
+      <p>You are now logged in via eID. This is your access token:</p>
+      <p>{{ accessToken }}</p>
+  
+      <p>
+        <button (click)="refresh()">Refresh</button>
+      </p>
+    </div>
+    <div class="item centered">
+      <h1 style="margin-left: 100px">Developed with &#10084; by...</h1>
+      <img style="margin-left: 100px; width: 500px" src="assets/L21s_logo_white@3x.png" />
+      <h1 style="margin-left: 100px">Wanna learn more?</h1>
+      <p style="margin-left: 100px">If you want to learn more about this plugin in particular or eID/Keycloak in general, feel free to reach out to Jan Schmitz-Hermes from L21s, who is the creator of this plugin (<a style="color:white;" href="mailto:jan.schmitz-hermes@l21s.de">Drop me a message</a>)</p>
+      
+    </div>
+  
+</div>

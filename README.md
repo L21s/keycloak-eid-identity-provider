@@ -30,7 +30,7 @@ Please look [here](config/config.md) if you want to know how to manually configu
 > [!NOTE]
 > This is only necessary in a test setup. In production setups, of course, users do not need to follow these steps.
 
-For using the Proof-of-Concept, the AusweisApp must be running on the same machine as Keycloak. In addition, it must be configured to mock an ID card.  
+For using the Proof-of-Concept, the AusweisApp ([Download](https://www.ausweisapp.bund.de/download)) must be running on the same machine as Keycloak. In addition, it must be configured to mock an ID card.  
 
 To mock an ID card, the developer mode must be activated:
 - Open the AusweisApp

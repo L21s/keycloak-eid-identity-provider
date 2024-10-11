@@ -26,7 +26,12 @@ If everything ran correctly, Keycloak is already to configured to use an eID pro
 
 Please look [here](config/config.md) if you want to know how to manually configure Keycloak.
 
-### 2) Configure the AusweisApp for test purposes
+### 2) Trust the Keycloak certificate in your browser
+Keycloak uses a self-signed certificate and your browser will most likely prevent the frontend application in step 4 from redirecting to keycloak. Thus, you need to open Keycloak before and trust the self-signed certificate. 
+
+Open https://localhost:8443/realms/master/.well-known/openid-configuration in the browser of your choice and accept the self-signed certificate. 
+
+### 3) Configure the AusweisApp for test purposes
 > [!NOTE]
 > This is only necessary in a test setup. In production setups, of course, users do not need to follow these steps.
 
@@ -42,7 +47,7 @@ Now, the developer mode is activated and you will see "developer settings" when 
 
 This is also described in [this official document](https://www.ausweisapp.bund.de/fileadmin/user_upload/AusweisApp-2.2.0-NetInstallation_Integration.pdf), but unfortunately only in German.  
 
-### 3) Login with (simulated) ID card
+### 4) Login with (simulated) ID card
 Open http://localhost:4200.  
 You will be redirected to Keycloak, where you can choose "eid" as a login method (below the username / password fields). You will then be redirected to the AusweisApp and the eID flow starts.  
 

@@ -22,7 +22,15 @@ Use the following commands to set up Keycloak with the eID identity provider plu
 `mvn clean package -P dev`  
 `docker-compose up`
 
-If everything ran correctly, Keycloak is already to configured to use an eID provider. This is done automatically using the beautiful `keycloak-config-cli` tool, which is also [open-source](https://github.com/adorsys/keycloak-config-cli). The corresponding config file is [config/realm.yaml](config/realm.yaml)
+If everything ran correctly, you should see the following line in your docker log:
+```
+[...]
+keycloak-1  | 2024-10-11 08:01:12,228 WARN  [org.keycloak.quarkus.runtime.KeycloakMain] (main) Running the server in development mode. DO NOT use this configuration in production.
+config-1    | 2024-10-11T08:01:15.157Z  INFO 1 --- [           main] d.a.k.config.KeycloakConfigRunner        : keycloak-config-cli ran in 00:11.643.
+config-1 exited with code 0
+```
+
+Then, you are already able to login to Keycloak via eID. The auto-configuration is done automatically using the beautiful `keycloak-config-cli` tool, which is also [open-source](https://github.com/adorsys/keycloak-config-cli). The corresponding config file is [config/realm.yaml](config/realm.yaml)
 
 Please look [here](config/config.md) if you want to know how to manually configure Keycloak.
 

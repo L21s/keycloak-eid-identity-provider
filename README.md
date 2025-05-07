@@ -74,7 +74,8 @@ sequenceDiagram
     Browser->>AusweisApp: Redirect with Tc Token URL
     AusweisApp->>Keycloak: Request Tc Token Endpoint
     Keycloak->>Keycloak: Generate SAML request
-    Keycloak->>ID Panstar Server: Send SAML request
+    Keycloak->>AusweisApp: Return SAML Request URL
+    AusweisApp->>ID Panstar Server: Send SAML request
     ID Panstar Server->>AusweisApp: Request ID card information
     AusweisApp->>AusweisApp: Read ID card information
     AusweisApp->>ID Panstar Server: Send ID card information

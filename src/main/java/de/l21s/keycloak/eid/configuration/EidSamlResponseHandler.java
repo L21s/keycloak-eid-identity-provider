@@ -105,7 +105,8 @@ public class EidSamlResponseHandler {
     // then we can retrieve the initiating authSession via the tabId
     String relayState = uriInfo.getQueryParameters().getFirst("RelayState");
     EidIdentityBrokerState eidState = EidIdentityBrokerState.fromRelayState(relayState);
-    return rootAuthSession.getAuthenticationSession(realm.getClientById(eidState.getClientId()), eidState.getTabId());
+    return rootAuthSession.getAuthenticationSession(
+        realm.getClientById(eidState.getClientId()), eidState.getTabId());
   }
 
   private void setUpIdentity(

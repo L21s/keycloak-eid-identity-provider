@@ -26,9 +26,16 @@ public class EidIdentityBrokerState {
     }
     String tabId = parts[1];
     String encodedClientId = parts[2];
-    String clientIdInDb = getClientDbUuid(encodedClientId);
+
+    byte[] decodedClientId = Base64Url.decode(encodedClientId);
+    ByteBuffer bb = ByteBuffer.wrap(decodedClientId);
+    long first = bb.getLong();
+    long second = bb.getLong();
+    UUID clientDbUuid = new UUID(first, second);
+    String clientIdInDb = clientDbUuid.toString();
+
     String encodedState = tabId + "." + clientIdInDb;
-    return new EidIdentityBrokerState(encodedClientId, tabId, encodedState);
+    return new EidIdentityBrokerState(clientIdInDb, tabId, encodedState);
   }
 
   public static EidIdentityBrokerState fromRelayState(String relayState) {
@@ -38,18 +45,9 @@ public class EidIdentityBrokerState {
     }
     String tabId = parts[0];
     String clientId = parts[1];
-    String clientIdInDb = getClientDbUuid(clientId);
-    String encodedState = tabId + "." + clientIdInDb;
-    return new EidIdentityBrokerState(clientId, tabId, encodedState);
-  }
 
-  private static String getClientDbUuid(String encodedClientId) {
-    byte[] decodedClientId = Base64Url.decode(encodedClientId);
-    ByteBuffer bb = ByteBuffer.wrap(decodedClientId);
-    long first = bb.getLong();
-    long second = bb.getLong();
-    UUID clientDbUuid = new UUID(first, second);
-    return clientDbUuid.toString();
+    String encodedState = tabId + "." + clientId;
+    return new EidIdentityBrokerState(clientId, tabId, encodedState);
   }
 
   public String getClientId() {

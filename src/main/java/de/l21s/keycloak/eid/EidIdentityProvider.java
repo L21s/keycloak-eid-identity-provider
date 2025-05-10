@@ -39,7 +39,8 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
     logger.info("Requested login with eID. Try to generate TcTokenUri and redirect to AusweisApp.");
 
     String authSessionId = request.getAuthenticationSession().getParentSession().getId();
-    String relayState = request.getState().getEncoded();
+    String relayState =
+        EidIdentityBrokerState.fromState(request.getState().getEncoded()).getEncoded();
 
     logger.debug("authSessionId is {}", authSessionId);
     logger.debug("RelayState is {}", relayState);

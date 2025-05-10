@@ -27,6 +27,9 @@ import org.keycloak.sessions.RootAuthenticationSessionModel;
 
 public class EidIdentityProviderUnitTest {
 
+  private static final String REQUEST_STATE =
+      "AWDYHOhB3Dy1FcD1rrfLh0eRFAC-t_CSd7G3KpHlb0o.erobji-kr7o.xrUVKpHiRA281FOHHr4wVw";
+
   @Test
   void startAuthenticationWithDesktopClient() {
     try {
@@ -51,7 +54,7 @@ public class EidIdentityProviderUnitTest {
       when(authSession.getParentSession()).thenReturn(rootSession);
       when(request.getAuthenticationSession().getParentSession().getId()).thenReturn("sessionId");
       when(request.getState()).thenReturn(identityBrokerState);
-      when(request.getState().getEncoded()).thenReturn("state");
+      when(request.getState().getEncoded()).thenReturn(REQUEST_STATE);
       when(request.getHttpRequest()).thenReturn(httpRequest);
       when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
       when(httpHeaders.getRequestHeader("User-Agent"))
@@ -66,7 +69,7 @@ public class EidIdentityProviderUnitTest {
       String expectedLocationHeaderValue =
           "http://127.0.0.1:24727/eID-Client?tcTokenURL="
               + URLEncoder.encode(
-                  "https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=state&authSessionId=sessionId",
+                  "https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=erobji-kr7o.c6b5152a-91e2-440d-bcd4-53871ebe3057&authSessionId=sessionId",
                   StandardCharsets.UTF_8);
       assertNotNull(response);
       assertEquals(303, response.getStatus());
@@ -101,7 +104,7 @@ public class EidIdentityProviderUnitTest {
       when(authSession.getParentSession()).thenReturn(rootSession);
       when(request.getAuthenticationSession().getParentSession().getId()).thenReturn("sessionId");
       when(request.getState()).thenReturn(identityBrokerState);
-      when(request.getState().getEncoded()).thenReturn("state");
+      when(request.getState().getEncoded()).thenReturn(REQUEST_STATE);
       when(request.getHttpRequest()).thenReturn(httpRequest);
       when(httpRequest.getHttpHeaders()).thenReturn(httpHeaders);
       when(httpHeaders.getRequestHeader("User-Agent"))
@@ -116,7 +119,7 @@ public class EidIdentityProviderUnitTest {
       String expectedLocationHeaderValue =
           "eid://127.0.0.1:24727/eID-Client?tcTokenURL="
               + URLEncoder.encode(
-                  "https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=state&authSessionId=sessionId",
+                  "https://localhost:8443/realms/master/tc-token-endpoint/tc-token?RelayState=erobji-kr7o.c6b5152a-91e2-440d-bcd4-53871ebe3057&authSessionId=sessionId",
                   StandardCharsets.UTF_8);
       assertNotNull(response);
       assertEquals(303, response.getStatus());

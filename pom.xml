@@ -18,7 +18,7 @@
 
         <keycloak.version>25.0.0</keycloak.version>
 
-        <panstar-sdk.version>4.0.2</panstar-sdk.version>
+        <panstar-sdk.version>4.1.0</panstar-sdk.version>
         <fmt-maven.version>2.22.1</fmt-maven.version>
         <identification-report.version>1.0.1</identification-report.version>
         <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>

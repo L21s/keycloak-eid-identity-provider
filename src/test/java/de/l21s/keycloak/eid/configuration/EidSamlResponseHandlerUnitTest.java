@@ -46,9 +46,7 @@ public class EidSamlResponseHandlerUnitTest {
         mock(RootAuthenticationSessionModel.class);
 
     MultivaluedHashMap<String, String> queryParameters = new MultivaluedHashMap<>();
-    queryParameters.put(
-        "RelayState",
-        List.of("AWDYHOhB3Dy1FcD1rrfLh0eRFAC-t_CSd7G3KpHlb0o.erobji-kr7o.xrUVKpHiRA281FOHHr4wVw"));
+    queryParameters.put("RelayState", List.of("erobji-kr7o.xrUVKpHiRA281FOHHr4wVw"));
     queryParameters.put("authSessionId", List.of("7d04d3c0-660e-475b-8679-c84772987d33"));
 
     String workDir = new File("src/test/resources").getAbsolutePath();

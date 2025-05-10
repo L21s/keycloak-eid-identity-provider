@@ -7,6 +7,7 @@ import de.governikus.panstar.sdk.saml.exception.SamlAuthenticationException;
 import de.governikus.panstar.sdk.saml.exception.UnsuccessfulSamlAuthenticationProcessException;
 import de.governikus.panstar.sdk.saml.response.ProcessedSamlResult;
 import de.governikus.panstar.sdk.utils.exception.InvalidInputException;
+import de.l21s.keycloak.eid.EidIdentityBrokerState;
 import de.l21s.keycloak.eid.EidIdentityProvider;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.core.Context;
@@ -15,9 +16,7 @@ import jakarta.ws.rs.core.UriInfo;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.ArrayUtils;
 import org.keycloak.broker.provider.BrokeredIdentityContext;
-import org.keycloak.broker.provider.util.IdentityBrokerState;
 import org.keycloak.events.EventBuilder;
-import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.sessions.AuthenticationSessionModel;
@@ -85,6 +84,15 @@ public class EidSamlResponseHandler {
     }
   }
 
+  private String getRestrictedIdString(PersonalDataType personalDataType) {
+    if (personalDataType == null
+        || personalDataType.getRestrictedID() == null
+        || ArrayUtils.isEmpty(personalDataType.getRestrictedID().getID())) {
+      return null;
+    }
+    return Hex.encodeHexString(personalDataType.getRestrictedID().getID());
+  }
+
   private AuthenticationSessionModel getAuthSession(
       UriInfo uriInfo, ProcessedSamlResult samlResponse) {
     // we retrieve the root authentication session via the id
@@ -96,18 +104,9 @@ public class EidSamlResponseHandler {
         session.authenticationSessions().getRootAuthenticationSession(realm, authSessionId);
     // then we can retrieve the initiating authSession via the tabId
     String relayState = uriInfo.getQueryParameters().getFirst("RelayState");
-    IdentityBrokerState identityBrokerState = IdentityBrokerState.encoded(relayState, realm);
-    ClientModel client = realm.getClientByClientId(identityBrokerState.getClientId());
-    return rootAuthSession.getAuthenticationSession(client, identityBrokerState.getTabId());
-  }
-
-  private String getRestrictedIdString(PersonalDataType personalDataType) {
-    if (personalDataType == null
-        || personalDataType.getRestrictedID() == null
-        || ArrayUtils.isEmpty(personalDataType.getRestrictedID().getID())) {
-      return null;
-    }
-    return Hex.encodeHexString(personalDataType.getRestrictedID().getID());
+    EidIdentityBrokerState eidState = EidIdentityBrokerState.fromRelayState(relayState);
+    return rootAuthSession.getAuthenticationSession(
+        realm.getClientById(eidState.getClientId()), eidState.getTabId());
   }
 
   private void setUpIdentity(

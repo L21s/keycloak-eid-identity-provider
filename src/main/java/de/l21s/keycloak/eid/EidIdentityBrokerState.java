@@ -11,12 +11,12 @@ public class EidIdentityBrokerState {
 
   private final String clientId;
   private final String tabId;
-  private final String encoded;
+  private final String compositeState;
 
-  private EidIdentityBrokerState(String clientId, String tabId, String encoded) {
+  private EidIdentityBrokerState(String clientId, String tabId, String compositeState) {
     this.clientId = clientId;
     this.tabId = tabId;
-    this.encoded = encoded;
+    this.compositeState = compositeState;
   }
 
   public static EidIdentityBrokerState fromState(String state) {
@@ -34,8 +34,8 @@ public class EidIdentityBrokerState {
     UUID clientDbUuid = new UUID(first, second);
     String clientIdInDb = clientDbUuid.toString();
 
-    String encodedState = tabId + "." + clientIdInDb;
-    return new EidIdentityBrokerState(clientIdInDb, tabId, encodedState);
+    String compositeState = tabId + "." + clientIdInDb;
+    return new EidIdentityBrokerState(clientIdInDb, tabId, compositeState);
   }
 
   public static EidIdentityBrokerState fromRelayState(String relayState) {
@@ -46,8 +46,8 @@ public class EidIdentityBrokerState {
     String tabId = parts[0];
     String clientId = parts[1];
 
-    String encodedState = tabId + "." + clientId;
-    return new EidIdentityBrokerState(clientId, tabId, encodedState);
+    String compositeState = tabId + "." + clientId;
+    return new EidIdentityBrokerState(clientId, tabId, compositeState);
   }
 
   public String getClientId() {
@@ -58,7 +58,7 @@ public class EidIdentityBrokerState {
     return tabId;
   }
 
-  public String getEncoded() {
-    return encoded;
+  public String getCompositeState() {
+    return compositeState;
   }
 }

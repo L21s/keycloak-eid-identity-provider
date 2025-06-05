@@ -40,7 +40,7 @@ public class EidIdentityProvider extends AbstractIdentityProvider<EidIdentityPro
 
     String authSessionId = request.getAuthenticationSession().getParentSession().getId();
     String relayState =
-        EidIdentityBrokerState.fromState(request.getState().getEncoded()).getEncoded();
+        EidIdentityBrokerState.fromState(request.getState().getEncoded()).getCompositeState();
 
     logger.debug("authSessionId is {}", authSessionId);
     logger.debug("RelayState is {}", relayState);
